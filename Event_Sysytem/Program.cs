@@ -18,6 +18,10 @@ namespace Event_Sysytem
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<EventContext>(
+             options => options.UseSqlServer(builder.Configuration.GetConnectionString("EventContext"))
+
+             );
 
             var app = builder.Build();
 
