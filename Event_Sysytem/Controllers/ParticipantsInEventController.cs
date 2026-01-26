@@ -5,7 +5,7 @@ namespace Event_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LookupController : ControllerBase
+    public class ParticipantsInEventController : ControllerBase
     {
     }
 }

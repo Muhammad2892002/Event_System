@@ -1,4 +1,7 @@
 
+using Event_System.DbContexts;
+using Microsoft.EntityFrameworkCore;
+
 namespace Event_Sysytem
 {
     public class Program
