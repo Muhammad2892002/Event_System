@@ -6,4 +6,14 @@
         Rejected = 1,
         pending = 0,
     }
+
+    public enum Roles {
+        Organizer=3,
+        Attendee=4
+
+
+
+
+    }
+  
 }

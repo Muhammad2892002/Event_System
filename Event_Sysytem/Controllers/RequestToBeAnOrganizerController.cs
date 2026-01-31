@@ -2,12 +2,14 @@
 using Event_System.Dtos.OrganizerRequest;
 using Event_System.Dtos.OrganizerRequestDto;
 using Event_System.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Event_System.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RequestToBeAnOrganizerController : ControllerBase
@@ -19,17 +21,23 @@ namespace Event_System.Controllers
            _eventContext = eventContext;
         
         }
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetByCriteria")]
         public IActionResult GetByCriteria([FromQuery]SearchRequestDto searchRequestDto) {
             try
             {
+                DateTime? requestedAt=searchRequestDto.RequestedTime?.Date;
+            
+
                 var allRequests = (from requests in _eventContext.OrganizerRequests
                                    where (requests.Status==searchRequestDto.Status||searchRequestDto.Status==null)&&
-                                   (requests.RequestedAt==searchRequestDto.RequestedTime||searchRequestDto.RequestedTime==null)
+                                   (searchRequestDto.RequestedTime==null ||(requests.RequestedAt>= requestedAt && requests.RequestedAt<requestedAt.Value.AddDays(1)))
                                    select new ShowOrganizerRequest { 
                                        UserId=requests.UserId,
                                        RequestedAt=requests.RequestedAt,
                                        Status=requests.Status,
+                                       Name=requests.UserNavigation.FirstName+" "+requests.UserNavigation.LastName,
+                                       StatusNamer=Service.Services.getStatusName(requests.Status)
                                    
                                    
                                    
@@ -51,7 +59,7 @@ namespace Event_System.Controllers
            
         
         }
-
+        //[Authorize(Roles = "Admin,Attendee")]
         [HttpPost("SendRequest")]
         public IActionResult SendRequest(int AttendeeId)
         {
@@ -96,6 +104,7 @@ namespace Event_System.Controllers
         
         
         }
+        //[Authorize(Roles = "Admin")]
         [HttpPut("UpdateRequest")]
         public IActionResult UpdateRequest(UpdateOrganizerRequestDto obj)
         {
@@ -136,13 +145,18 @@ namespace Event_System.Controllers
 
 
                     }
-                   
+                    else if (obj.Status < (int)Enums.Status.pending || obj.Status > (int)Enums.Status.Approved) {
+
+                        return BadRequest("You entered an invalid status. You can use: rejected = 1 or approved = 2");
+                    
+                    }
+
 
                         return Ok("Request Added Successfully");
                 }
                 else { 
                 
-                 return BadRequest("Request do not exist  ");
+                 return BadRequest("Request do not exist ");
                 
                 }
 
@@ -160,12 +174,13 @@ namespace Event_System.Controllers
         
         
         }
-
+        //[Authorize(Roles = "Admin,Attendee")]
         [HttpDelete("DeleteRequest")]
         public IActionResult Deleterequest(long Id) {
             try
             {
                 var OrganizerRequest = _eventContext.OrganizerRequests.FirstOrDefault(obj => obj.Id == Id);
+                
 
                 if (OrganizerRequest != null) {
                     if (OrganizerRequest.Status == (int)Enums.Status.Rejected)
@@ -187,7 +202,7 @@ namespace Event_System.Controllers
                 
                 
                 }
-                return BadRequest("The Request is Deleted");
+                return BadRequest("The Request is Deleted or does not exist");
                
 
             }

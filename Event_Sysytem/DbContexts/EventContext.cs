@@ -5,19 +5,20 @@ namespace Event_System.DbContexts
 {
     public class EventContext :DbContext
     {
-        public EventContext(DbContextOptions<EventContext>options):base(options) {
-        
+        public EventContext(DbContextOptions<EventContext> options) : base(options)
+        {
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Event>().HasOne(ev=>ev.LocationNavigation)
+            modelBuilder.Entity<Event>().HasOne(ev => ev.LocationNavigation)
                 .WithMany()
-                .HasForeignKey(ev=>ev.Location)
+                .HasForeignKey(ev => ev.Location)
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-           
+
             modelBuilder.Entity<Attendee>().HasOne(ev => ev.RoleNavigation)
                 .WithMany()
                 .HasForeignKey(ev => ev.Role)
@@ -25,7 +26,7 @@ namespace Event_System.DbContexts
 
 
             modelBuilder.Entity<Lookup>().HasData(
-                new Lookup { Id=1,MajorCode=0,MinorCode=0,Name="Role" },
+                new Lookup { Id = 1, MajorCode = 0, MinorCode = 0, Name = "Role" },
                  new Lookup { Id = 2, MajorCode = 0, MinorCode = 1, Name = "Admin" },
                   new Lookup { Id = 3, MajorCode = 0, MinorCode = 2, Name = "Organizer" },
                    new Lookup { Id = 4, MajorCode = 0, MinorCode = 3, Name = "Attendee" },
@@ -43,12 +44,12 @@ namespace Event_System.DbContexts
                 );
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id=5,UserName="admin",  HashedPassword="$2a$11$sZCZCInSvcGZh3AT8ZylyeU4aonLYzQHos3czzJOoLs0./KdnlS8y" }
+                new User { Id = 5, UserName = "admin", HashedPassword = "$2a$11$sZCZCInSvcGZh3AT8ZylyeU4aonLYzQHos3czzJOoLs0./KdnlS8y", IsAdmin = true }
                 );
-            modelBuilder.Entity<Attendee>().HasIndex(u=>u.UserId).IsUnique();
+            modelBuilder.Entity<Attendee>().HasIndex(u => u.UserId).IsUnique();
 
             modelBuilder.Entity<EventParticipant>().HasIndex(ep => new { ep.UserId, ep.EventId }).IsUnique();
-           
+
 
             modelBuilder.Entity<EventParticipant>()
     .HasOne(ep => ep.UserNavigation)
@@ -62,7 +63,7 @@ namespace Event_System.DbContexts
                 .HasForeignKey(ep => ep.EventId)
                 .OnDelete(DeleteBehavior.Cascade); // safe
 
-            
+
 
 
             modelBuilder.Entity<EventRequest>()
@@ -85,13 +86,14 @@ namespace Event_System.DbContexts
 
         public DbSet<EventParticipant> EventParticipants { get; set; }
 
-        public DbSet<EventRequest>EventRequests { get; set; }
+        public DbSet<EventRequest> EventRequests { get; set; }
 
-        public DbSet<Lookup>Lookups { get; set; }
+        public DbSet<Lookup> Lookups { get; set; }
 
         public DbSet<OrganizerRequest> OrganizerRequests { get; set; }
 
-        public DbSet<User>Users { get; set; }
+        public DbSet<User> Users { get; set; }
+
 
 
 

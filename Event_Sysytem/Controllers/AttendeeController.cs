@@ -1,13 +1,16 @@
 ﻿using Event_System.DbContexts;
 using Event_System.Dtos;
 using Event_System.Dtos.AttendeeDto;
+using Event_System.Dtos.EventDto;
 using Event_System.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 
 namespace Event_System.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AttendeeController : ControllerBase
@@ -17,29 +20,50 @@ namespace Event_System.Controllers
             _eventContext = eventContext;
         
         }
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetByCriteria")]
 
         public IActionResult GetByCriteria([FromQuery]SearchAttendee searchAttendee) {
             try
             {
                 var allAttendes = (from attendee in _eventContext.Attendees
-                                   from user in _eventContext.Users.Where(obj=>obj.Id==attendee.UserId) where
-                                  (attendee.FirstName.Contains(searchAttendee.AteendeeName) || attendee.LastName.Contains(searchAttendee.AteendeeName) || searchAttendee.AteendeeName == null) &&
-                                  (searchAttendee.IsActivated==attendee.IsActive|| searchAttendee.IsActivated==null)&&(
-                                  searchAttendee.Role==attendee.Role||searchAttendee.Role==null)
+                                   join user in _eventContext.Users
+                                   on attendee.UserId equals user.Id
+                                
+                                     where
+                                (
+                                       
+                                   (searchAttendee.AteendeeFirstName==null||attendee.FirstName.ToUpper().Contains(searchAttendee.AteendeeFirstName.ToUpper()))
+                                   &&
+                                    (searchAttendee.AteendeeLastName == null || attendee.LastName.ToUpper().Contains(searchAttendee.AteendeeLastName.ToUpper()))
+                                    &&
+
+                                  (searchAttendee.IsActivated==attendee.IsActive|| searchAttendee.IsActivated==null)
+                                  &&
+                                  (attendee.Gender == searchAttendee.Gender || searchAttendee.Gender==null)&&
+                                  
+                                  
+                                  ( attendee.Role==(int)searchAttendee.Role||searchAttendee.Role==null)
+                                 )
                                   orderby attendee.Id
-                                  select new CreateAteendeeDto { 
+                                  select new ShowAllAtendeeDto
+                                  { 
                                       FirstName=attendee.FirstName,
                                       LastName=attendee.LastName,
                                       Gender=attendee.Gender,
+                                     
+                                      GenderName=attendee.Gender?"Male":"Female",
                                       CreatedAt=attendee.CreatedAt,
                                       Email=attendee.Email,
-                                      Id=attendee.Id,
+                                     
                                       IsActive=attendee.IsActive,
-                                      UserId=attendee.UserId,
+                                    
                                       UserName=user.UserName,
-                                      Role=attendee.Role,
-                                      Password=user.HashedPassword
+                                   
+                                      Password=user.HashedPassword,
+                                      RoleName=attendee.RoleNavigation.Name
+                                      
+                                      
 
                                   
                                   
@@ -71,10 +95,19 @@ namespace Event_System.Controllers
         
         
         }
-
+        //[Authorize(Roles = "Admin")]
         [HttpPost("Create")]
+        
         public IActionResult Create([FromBody]CreateAteendeeDto createNewAttendee) {
             try {
+                bool IsUserNameExist = _eventContext.Users.Any(x=>x.UserName==createNewAttendee.UserName);
+                if (IsUserNameExist) {
+                    return BadRequest("The user name is Exist");
+
+                
+                
+                }
+            
 
                 User user = new User()
                 {
@@ -85,14 +118,26 @@ namespace Event_System.Controllers
 
 
                 };
-               bool IsUserExist = _eventContext.Users.Any(x=>x.UserName==createNewAttendee.UserName);
-                if (IsUserExist) {
-                    return BadRequest("The User name you entered is exist");
-                
-                
+                bool isEmailExist = _eventContext.Attendees.Any(x => x.Email == createNewAttendee.Email);
+                bool doesNameExist = _eventContext.Attendees.Any(x => x.FirstName == createNewAttendee.FirstName && x.LastName == createNewAttendee.LastName);
+                if (doesNameExist)
+                {
+                    return BadRequest("The Name you entered exist");
+
+
                 }
-                _eventContext.Users.Add(user);
+                if (isEmailExist) {
+
+                    return BadRequest("The Email you entered is exist");
+                }
                
+
+                _eventContext.Users.Add(user);
+
+
+
+              
+
                 Attendee attendee = new Attendee()
                 {
                     FirstName = createNewAttendee.FirstName,
@@ -129,13 +174,34 @@ namespace Event_System.Controllers
 
 
         }
-
+        //[Authorize(Roles = "Admin")]
         [HttpPut("Update")]
+       
         public IActionResult Update([FromBody]Update_Attendee update_Attendee) {
             try {
 
                var attendee= _eventContext.Attendees.FirstOrDefault(attende => attende.Id == update_Attendee.Id);
-                var AttendeeUser = _eventContext.Users.FirstOrDefault(user => user.Id == attendee.UserId);
+                if (attendee != null) { 
+                    var attendeeUser = _eventContext.Users.FirstOrDefault(user => user.Id == attendee.UserId);
+                var isEmailExist = _eventContext.Attendees.Any(obj=>obj.Email==update_Attendee.Email&& obj.Id != attendee.Id);
+                var isUserNameExist = _eventContext.Users.Any(obj=> obj.UserName == update_Attendee.UserName&& obj.Id != attendeeUser.Id);
+                if (isUserNameExist) {
+                    return BadRequest("You cant use Existed User Name");
+                
+                }
+                    var checkNameExist = _eventContext.Attendees.Any(obj => (obj.FirstName == update_Attendee.FirstName && obj.LastName == update_Attendee.LastName) &&  obj.Id != attendee.Id );
+                    if (checkNameExist) { 
+                    
+                     return BadRequest("This name is already exist.");
+                    }
+                        
+                if (isEmailExist) {
+
+                    return BadRequest("You cant Use This Email");
+                
+                
+                }
+               
 
                 attendee.FirstName = update_Attendee.FirstName;
                 attendee.LastName = update_Attendee.LastName;
@@ -144,11 +210,16 @@ namespace Event_System.Controllers
                 attendee.Email = update_Attendee.Email;
                 attendee.IsActive = update_Attendee.IsActive;
                 
-                AttendeeUser.UserName = update_Attendee.UserName;
-                AttendeeUser.HashedPassword = BCrypt.Net.BCrypt.HashPassword(update_Attendee.Password);
+                attendeeUser.UserName = update_Attendee.UserName;
+                attendeeUser.HashedPassword = BCrypt.Net.BCrypt.HashPassword(update_Attendee.Password);
                 _eventContext.SaveChanges();
                 
-                return Ok();
+                  return Ok();
+                }
+                return BadRequest("There is No Attendee");
+            
+                
+              
             }
             catch(Exception message){ 
                 return BadRequest(message);
@@ -158,18 +229,58 @@ namespace Event_System.Controllers
         
         
         }
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("Delete")]
         public IActionResult Delete(long id) {
             try
             {
+                string massage = string.Empty;
                 var attende = _eventContext.Attendees.FirstOrDefault(attendee => attendee.Id == id);
+
                 if (attende != null)
                 {
-                    var user = _eventContext.Users.FirstOrDefault(obj => obj.Id == attende.UserId);
-                    _eventContext.Attendees.Remove(attende);
+                    if (attende.Role == (int)Enums.Roles.Organizer)
+                    {
+
+                        var CheckEventOrganize = _eventContext.Events.Any(obj => obj.OrganizerId == attende.Id);
+                        if (CheckEventOrganize)
+                        {
+
+                            return BadRequest("This organizer cannot be deleted. Please remove all attendees from all events organized by this user first.");
+                        }
+                        massage = "Deleted Organizer successfully";
+
+                     
+
+
+
+
+
+                    }
+                    else if (attende.Role == (int)Enums.Roles.Attendee) {
+                        var checkIfHeIsParticipants = _eventContext.EventParticipants.Any(obj=>obj.UserId==attende.Id);
+                        
+                        if (checkIfHeIsParticipants)
+                        {
+
+                            return BadRequest("You cannot delete this attendee while he is  registered as a participant in one or more events.");
+
+                        }
+                        massage = "Removed Attendee successfully";
+                      
+                    
+                    
+                    
+                    }
+
+                        var user = _eventContext.Users.FirstOrDefault(obj => obj.Id == attende.UserId);
+                    var allRequestsToBeDeleted = _eventContext.EventRequests.Where(req=>req.UserId==attende.Id).ToList();
+                    _eventContext.EventRequests.RemoveRange(allRequestsToBeDeleted);
                     _eventContext.Users.Remove(user);
+                    _eventContext.Attendees.Remove(attende);
+                   
                     _eventContext.SaveChanges();
-                    return Ok("Attendee Deleted SuccessFully");
+                    return Ok(massage);
                 }
                 else {
 

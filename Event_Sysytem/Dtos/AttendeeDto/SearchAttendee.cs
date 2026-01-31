@@ -3,9 +3,15 @@
     public class SearchAttendee
     {
 
-        public string? AteendeeName { get; set; }
+        public string? AteendeeFirstName { get; set; }
 
-        public long? Role { get; set; }
+        public string? AteendeeLastName { get; set; }
+
+        public Enums.Roles? Role { get; set; }
+
+        public bool? Gender { get; set; }
+
+      
 
         public bool? IsActivated { get; set; }
     }

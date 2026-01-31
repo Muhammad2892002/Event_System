@@ -284,6 +284,9 @@ namespace Event_System.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -297,6 +300,7 @@ namespace Event_System.Migrations
                         {
                             Id = 5L,
                             HashedPassword = "$2a$11$sZCZCInSvcGZh3AT8ZylyeU4aonLYzQHos3czzJOoLs0./KdnlS8y",
+                            IsAdmin = true,
                             UserName = "admin"
                         });
                 });
