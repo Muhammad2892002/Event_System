@@ -41,6 +41,17 @@ options.TokenValidationParameters = new TokenValidationParameters
 };
 });
 
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngular", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200") 
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -48,6 +59,7 @@ options.TokenValidationParameters = new TokenValidationParameters
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseCors("AllowAngular");
             }
 
             app.UseHttpsRedirection();

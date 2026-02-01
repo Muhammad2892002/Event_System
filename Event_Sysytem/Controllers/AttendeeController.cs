@@ -48,7 +48,10 @@ namespace Event_System.Controllers
                                   orderby attendee.Id
                                   select new ShowAllAtendeeDto
                                   { 
-                                      FirstName=attendee.FirstName,
+                                      Id=attendee.Id,
+                                      UserId=attendee.UserId,
+                                      Role=attendee.Role,
+                                      FirstName =attendee.FirstName,
                                       LastName=attendee.LastName,
                                       Gender=attendee.Gender,
                                      
