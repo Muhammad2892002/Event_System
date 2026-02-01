@@ -1,0 +1,172 @@
+.welcome{
+
+    font-size: 20px;
+    font-weight: 600;
+}
+.passed{
+    font-weight: 600px;
+    color:green;
+}
+.Failed{
+
+   font-weight: 500px;
+    color:red;
+
+}
+
+.header{
+
+
+
+        background-color: #ffffff;
+    padding: 1% 4% 2%;
+    border-radius: 10px;
+  
+    border: 1px #dddddd solid;
+      border-top: 10px #673ab6 solid ;
+}
+.email,.switch-account,.cloud-icon,.description{
+     font-size: 0.9rem;
+
+
+}
+.email{
+
+        font-weight: 600;
+    color: #938b8b;
+  
+}
+
+.warning, .required-icon,.invalid-msg{
+        color: #ff1313;
+}
+.cloud-icon{
+        cursor: pointer;
+}
+.question{
+    background-color: #ffffff;
+       
+    
+    padding: 2% 4% 2%;
+    border: 1px #dddddd solid;
+    border-radius: 10px;
+    margin-top: 1%;
+
+
+}
+.title{
+
+        font-size: 1.3rem;
+    margin-bottom: 1%;
+}
+
+input,select{
+
+        padding: 1% 2%;
+    border: 1px #cccccc solid;
+    border-radius: 4px;
+    width: 50%;
+        box-sizing: border-box;
+}
+.action-btn{
+
+    padding: 1.5% 2.5%;
+ 
+    border-radius: 4px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.submit-btn{
+       background-color: #673ab6;;
+    color: white;
+
+    
+}
+.reset-btn{
+      
+    background-color: unset;
+    color: #673ab6;
+ 
+
+
+}
+.reset-btn:hover{
+
+    background-color: #683ab609;
+}
+.actions{
+
+        margin-top: 1%;
+            display: flex;
+    justify-content: space-between;
+}
+.copy-right{
+
+    font-size: 0.8rem;
+    color: #6e6565;
+}
+.logo{
+
+        font-size: 1.4rem;
+    font-weight: 600;
+    color: #696868;
+}
+.container{
+    margin:40px;
+    border:  1px solid rgb(120, 117, 117);
+    padding: 10px;
+}
+.box{
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 4px;
+}
+
+.footer{
+        display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 4%;
+}
+.account{
+    display: flex;
+}
+.switch-account{
+    flex-grow: 1;
+    margin-left: 2%;
+}
+  .red-border{
+
+        border-color: red;
+    }
+.disabled-btn{
+    background-color: #673ab54d;
+}
+.invalid-msg{
+ 
+    font-size: 0.9rem;
+    padding: 1%;
+    
+}
+
+@media(max-width:650px){
+
+ 
+    input,select{
+
+        width: 100%;
+                padding: 4% 5%;
+        font-size: 1.3rem;
+    }
+
+    .action-btn{
+            padding: 2.5% 6.5%;
+    font-size: 1rem;
+    }
+
+  
+}
