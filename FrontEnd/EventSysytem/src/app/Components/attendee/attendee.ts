@@ -27,6 +27,10 @@ export class AttendeeComponent {
     itemsPerPage:5,
     currentPage:1,
   }
+  ngOnInit(){
+    this.click();//load all attendees at the beginning
+  }
+
   changePage(pageNumber:number){
     this.paginationConfig.currentPage=pageNumber;
   }

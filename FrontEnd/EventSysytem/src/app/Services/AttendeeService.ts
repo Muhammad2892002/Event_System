@@ -23,5 +23,9 @@ export class AttendeeService {
 
 
   }
+  getAllOrganizers(){
+    return this._http.get(this.apiUrl+'/GetAllOrganizers');
+
   
+  } 
 }

@@ -2,6 +2,11 @@
 {
     public class ShowAllParticipantsDto
     {
+        public long Id { get; set; }
+        public long OrganizerId { get; set; }
+        public long LocationId { get; set; }
+        public long AttendeeId { get; set; }
+        public long EventId { get; set; }
         public string AttendeeName { get; set; }
         public string Email { get; set; }
 

@@ -55,6 +55,7 @@ namespace Event_System.Controllers
              )
          select new ShowAllEvents
          {
+             Id = events.Id,
              Title = events.Title,
              Description = events.Description,
              EventDate = events.EventDate,

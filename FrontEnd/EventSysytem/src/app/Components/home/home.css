@@ -1,0 +1,24 @@
+.custom-home-card {
+       width: 50%;
+   flex: 1;
+        margin: 2%;
+}
+
+
+.main-div{
+        display: flex;
+        height: 100vh!important;
+}
+
+.card-header-request{
+
+        display: flex;
+    justify-content: space-between;
+}
+.admin-decide{
+    margin-top: 2%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+

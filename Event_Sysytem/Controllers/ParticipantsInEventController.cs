@@ -34,6 +34,12 @@ namespace Event_System.Controllers
                                            && (searchParticipants.ParticipantId == particinates.UserId || searchParticipants.ParticipantId == null)
                                            select new ShowAllParticipantsDto
                                            {
+                                               Id=particinates.Id,
+                                               LocationId=particinates.EventNavigation.Location,
+                                                  OrganizerId=particinates.EventNavigation.OrganizerId,
+                                                  
+                                               AttendeeId = particinates.UserId,
+                                                  EventId = particinates.EventId,
                                                AttendeeName = particinates.UserNavigation.FirstName + particinates.UserNavigation.LastName,
                                                Email = particinates.UserNavigation.Email,
                                                EventName = particinates.EventNavigation.Title,
@@ -292,6 +298,61 @@ namespace Event_System.Controllers
             }
         
         
+        }
+        [HttpGet("AllParticipantsInEvent")]
+
+        public IActionResult AllParticipantsInEvent()
+        {
+            try
+            {
+                var allParticipants = _eventContext.EventParticipants
+       .GroupBy(p => p.UserId)   // group by UserId to remove duplicates
+       .Select(g => new GetAllParticipantsDto
+       {
+           ParticipantUserId = g.Key,
+           ParticipantName = g.First().UserNavigation.FirstName + " " + g.First().UserNavigation.LastName
+       })
+       .ToList();
+
+                return Ok(allParticipants);
+
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+
+
+            }
+        }
+
+
+        [HttpGet("AllEventsInParticipant")]
+
+        public IActionResult AllEventsInParticipant()
+        {
+            try
+            {
+                var allEventsInParticipants = _eventContext.EventParticipants.GroupBy(p => p.EventId).Select(
+                    
+                    obj=>new GetAllEventInParticipantDto
+                    {
+                        EventId = obj.First().EventId,
+                        EventName = obj.First().EventNavigation.Title
+                    }
+                    ).ToList();
+                return Ok(allEventsInParticipants);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+
+
+            }
         }
     }
 }

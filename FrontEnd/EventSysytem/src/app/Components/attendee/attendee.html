@@ -26,27 +26,27 @@
   <div class="col-md-4 col-sm-6">
     <label class="form-label">Role</label>
     <select class="form-select" formControlName="RoleId">
-      <option [value]="null">Choose Role</option>
-      <option [value]="4">Attendee</option>
-      <option [value]="3">Organizer</option>
+      <option [ngValue]="null">Choose Role</option>
+      <option [ngValue]="4">Attendee</option>
+      <option [ngValue]="3">Organizer</option>
     </select>
   </div>
 
   <div class="col-md-4 col-sm-6">
     <label class="form-label">Gender</label>
     <select class="form-select" formControlName="GenderId">
-      <option [value]="null">Choose Gender</option>
-      <option [value]="true">Male</option>
-      <option [value]="false">Female</option>
+      <option [ngValue]="null">Choose Gender</option>
+      <option [ngValue]="true">Male</option>
+      <option [ngValue]="false">Female</option>
     </select>
   </div>
 
   <div class="col-md-4 col-sm-6">
     <label class="form-label">Is Activated</label>
     <select class="form-select" formControlName="ISActivated">
-      <option [value]="null">Choose Status</option>
-      <option [value]="true">Active</option>
-      <option [value]="false">Inactive</option>
+      <option [ngValue]="null">Choose Status</option>
+      <option [ngValue]="true">Active</option>
+      <option [ngValue]="false">Inactive</option>
     </select>
   </div>
 
