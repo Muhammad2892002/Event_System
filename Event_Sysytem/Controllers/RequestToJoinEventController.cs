@@ -1,4 +1,5 @@
 ﻿using Event_System.DbContexts;
+using Event_System.Dtos.EventParticipantsDtos;
 using Event_System.Dtos.EventRequestDto;
 using Event_System.Dtos.EventRequestDTO;
 using Event_System.Models;
@@ -24,7 +25,7 @@ namespace Event_System.Controllers
         }
         //[Authorize(Roles = "Organizer,Admin")]
         [HttpGet("GetByCriteria")]
-        public IActionResult GetByCriteria([FromQuery]SearchEventRequestsDto obj) {
+        public IActionResult GetByCriteria([FromQuery]SearchEventRequestsDto obj)   {
 
 
             try {
@@ -38,13 +39,15 @@ namespace Event_System.Controllers
                                        join user in _context.Attendees
                                        on request.UserId equals user.Id
 
-                                       where (obj.UserId == request.UserId || obj.UserId == null) &&
-                                       (obj.EventId == request.EventId || obj.EventId == null) &&
-                                       ((request.RequestedAt >= requestedDate && request.RequestedAt < requestedDate.Value.AddDays(1)) || obj.RequestedAt == null) &&
-                                       (obj.Status == request.Status || obj.Status == null)
+                                       where ( obj.UserId == null ||  obj.UserId == request.UserId  ) &&
+                                       (   obj.EventId == null || obj.EventId == request.EventId ) &&
+                                       (requestedDate == null ||  (request.RequestedAt >= requestedDate && request.RequestedAt < requestedDate.Value.AddDays(1)) ) &&
+                                       (  obj.Status == null || obj.Status == request.Status )
                                        select new ShowAllEventRequestsDto
                                        {
                                            Id = request.Id,
+                                           UserId = request.UserId,
+                                           
                                            EventId = request.EventId,
                                            email = user.Email,
                                            EventName = request.EventNavigation.Title,
@@ -293,6 +296,64 @@ namespace Event_System.Controllers
         
         
         }
-     
+
+
+        [HttpGet("GetAllAttendeesWithRequests")]
+        public IActionResult GetAllAttendeesWithRequests() {
+            try {
+                var allAttendee=_context.EventRequests.GroupBy(obj=>obj.UserId).Select(g=>new GetAllParticipantsDto { 
+                  ParticipantUserId=g.Key,
+                  ParticipantName=g.First().UserNavigation.FirstName+" "+ g.First().UserNavigation.LastName
+
+
+                } ).ToList();
+
+
+                return Ok(allAttendee);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
+
+
+
+
+            }
+
+
+
+        [HttpGet("GetAllEventsWithRequests")]
+        public IActionResult GetAllEventsWithRequests()
+        {
+            try
+            {
+                var allEvents = _context.EventRequests.GroupBy(obj => obj.EventId).Select(g => new GetAllEventInParticipantDto
+                {
+                  EventId = g.Key,
+                  EventName = g.First().EventNavigation.Title
+
+
+                }).ToList();
+
+
+                return Ok(allEvents);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
+
+
+
+
+        }
+
+
+
     }
 }

@@ -12,7 +12,7 @@ namespace Event_System.Dtos.OrganizerRequest
     
 
         public int Status { get; set; } // e.g., "Pending", "Approved", "Rejected"
-        public string StatusNamer { get; set; }
+        public string StatusName { get; set; }
 
         public DateTime RequestedAt { get; set; }
 

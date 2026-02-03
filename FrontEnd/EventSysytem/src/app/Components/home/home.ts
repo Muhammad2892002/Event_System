@@ -1,11 +1,119 @@
 import { Component } from '@angular/core';
+import { EventRequest } from '../../Interface/event-request';
+import { showAllOragnizerRequest } from '../../Interface/show-organizers-request';
+import { RequestToJoinEventService } from '../../Services/request-to-join-event-service';
+
+import { RequestToBeOrganizerService } from '../../Services/request-to-be-organizer';
+import { FormControl, FormGroup,ReactiveFormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
 export class HomeComponent {
+  constructor(private requestToJoinEvent:RequestToJoinEventService,
+    private requestToBeOrganizer:RequestToBeOrganizerService
+  ){}
+   getAllPendingRequestToEvents:FormGroup=new FormGroup({
+  eventId:new FormControl<number | null>(null),
+  userId:new FormControl<number | null>(null),
+  status:new FormControl<number | null>(null),
+  requestedAt:new FormControl<string | null>(null),
+ 
+  });
+  ngOnInit(){
+    this.getAllPendingRequestToJoinEvent();
+    this.getAllPendingRequestToAnOrganizer();
+
+  }
+     getAllPendingRequestsToBeAnOrganizer:FormGroup=new FormGroup({
+    status:new FormControl<number | null>(null),
+    requestedTime:new FormControl<string | null>(null),
+    
+   
+ 
+  });
+
+  pendingRequestToJoinEvent:EventRequest[]=[];
+  pendingRequestToBeOrganizer:showAllOragnizerRequest[]=[];
+
+  getAllPendingRequestToJoinEvent(){
+    this.getAllPendingRequestToEvents.patchValue({
+      status:0
+    });
+      
+    
+    
+    
+    this.requestToJoinEvent.GetAllRequest(this.getAllPendingRequestToEvents.value).subscribe({
+
+      next:(res:any)=>{
+        res.forEach((element:any)=>{
+          let request:EventRequest={
+            id:element.id,
+            eventId:element.eventId,
+            userId:element.userId,
+            eventName:element.eventName,
+            userName:element.name,
+            email:element.email,
+            status:element.status,
+            statusName:element.statusName,
+            requestedAt:element.requestedAt
+
+          }
+          this.pendingRequestToJoinEvent.push(request);
+
+        })
+
+      },
+      error:(err:any)=>{
+        console.log(err);
+      }
+    });
+
+
+  }
+
+
+
+   getAllPendingRequestToAnOrganizer(){
+    this.getAllPendingRequestsToBeAnOrganizer.patchValue({
+      status:0
+    });
+      
+    
+    
+    
+     this.requestToBeOrganizer.GetAllRequests(this.getAllPendingRequestsToBeAnOrganizer.value).subscribe({
+      next:(res:any)=>{
+        res.forEach((x:any)=>{
+          let request:showAllOragnizerRequest={
+            id:x.id,
+            userId:x.userId,
+            attendeeName:x.name,
+            statusId:x.status,
+            statusName:x.statusName,
+            RequestDate:x.requestedAt
+            
+
+
+          }
+          this.pendingRequestToBeOrganizer.push(request);
+
+
+        })
+      },
+      error:err=>{
+        console.log(err);
+      }
+
+      
+    })
+
+
+  }
 
 }

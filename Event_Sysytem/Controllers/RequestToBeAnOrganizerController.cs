@@ -33,11 +33,13 @@ namespace Event_System.Controllers
                                    where (requests.Status==searchRequestDto.Status||searchRequestDto.Status==null)&&
                                    (searchRequestDto.RequestedTime==null ||(requests.RequestedAt>= requestedAt && requests.RequestedAt<requestedAt.Value.AddDays(1)))
                                    select new ShowOrganizerRequest { 
+                                       Id = requests.Id,
+                                       
                                        UserId=requests.UserId,
                                        RequestedAt=requests.RequestedAt,
                                        Status=requests.Status,
                                        Name=requests.UserNavigation.FirstName+" "+requests.UserNavigation.LastName,
-                                       StatusNamer=Service.Services.getStatusName(requests.Status)
+                                       StatusName=Service.Services.getStatusName(requests.Status)
                                    
                                    
                                    

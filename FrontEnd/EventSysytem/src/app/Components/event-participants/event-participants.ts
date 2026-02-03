@@ -4,10 +4,11 @@ import { FormGroup, FormControl,ReactiveFormsModule } from '@angular/forms';
 import { Filter } from '../../Interface/Filter';
 import { EventParticipantsService } from '../../Services/EventParticipantsService';
 import { EventParticipant } from '../../Interface/event-participant';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-event-participants',
-  imports: [NgxPaginationModule, ReactiveFormsModule],
+  imports: [NgxPaginationModule, ReactiveFormsModule,DatePipe],
   templateUrl: './event-participants.html',
   styleUrl: './event-participants.css',
 })
