@@ -106,59 +106,67 @@ namespace Event_System.Controllers
 
         public IActionResult Create([FromBody] CreateAteendeeDto createNewAttendee)
         {
+            List<string>errorMassage= new List<string>();
+            User user=new User();
             try
             {
                 bool IsUserNameExist = _eventContext.Users.Any(x => x.UserName == createNewAttendee.UserName);
                 if (IsUserNameExist)
                 {
-                    return BadRequest("The user name is Exist");
+                    errorMassage.Add("*The user name is Exist"); 
 
 
 
                 }
-
-
-                User user = new User()
-                {
-                    Id = 0,
-                    UserName = createNewAttendee.UserName,
-                    HashedPassword = BCrypt.Net.BCrypt.HashPassword(createNewAttendee.Password)
-
-
-
-                };
+          
                 bool isEmailExist = _eventContext.Attendees.Any(x => x.Email == createNewAttendee.Email);
                 bool doesNameExist = _eventContext.Attendees.Any(x => x.FirstName == createNewAttendee.FirstName && x.LastName == createNewAttendee.LastName);
                 if (doesNameExist)
                 {
-                    return BadRequest("The Name you entered exist");
+                  
+                    errorMassage.Add( "*The Name you entered exist");
 
 
                 }
                 if (isEmailExist)
                 {
 
-                    return BadRequest("The Email you entered is exist");
+                   
+                    errorMassage.Add("*The Email you entered is exist");
                 }
 
 
-                _eventContext.Users.Add(user);
 
 
 
 
-
-                Attendee attendee = new Attendee()
+                if (errorMassage.Count==0)
                 {
-                    FirstName = createNewAttendee.FirstName,
-                    LastName = createNewAttendee.LastName,
-                    Email = createNewAttendee.Email,
-                    Gender = createNewAttendee.Gender,
-                    IsActive = createNewAttendee.IsActive,
-                    UserId = user.Id,
-                    UserNavigation = user,
-                    CreatedAt = DateTime.Now,
-                    Role = 4,
+                    user = new User()
+                    {
+                        Id = 0,
+                        UserName = createNewAttendee.UserName,
+                        HashedPassword = BCrypt.Net.BCrypt.HashPassword(createNewAttendee.Password)
+
+
+
+                    };
+                    _eventContext.Users.Add(user);
+
+
+
+
+                    Attendee attendee = new Attendee()
+                    {
+                        FirstName = createNewAttendee.FirstName,
+                        LastName = createNewAttendee.LastName,
+                        Email = createNewAttendee.Email,
+                        Gender = createNewAttendee.Gender,
+                        IsActive = createNewAttendee.IsActive,
+                        UserId = user.Id,
+                        UserNavigation = user,
+                        CreatedAt = DateTime.Now,
+                        Role = 4,
 
 
 
@@ -166,10 +174,20 @@ namespace Event_System.Controllers
 
 
 
-                };
-                _eventContext.Attendees.Add(attendee);
-                _eventContext.SaveChanges();
-                return Ok("Added Successfully");
+                    };
+                    _eventContext.Attendees.Add(attendee);
+                    _eventContext.SaveChanges();
+                    return Ok(new {massage="Added successfully" });
+
+                }
+
+                else { 
+                
+                  
+                    return BadRequest(errorMassage);
+                
+                }
+                
 
 
             }
@@ -204,7 +222,7 @@ namespace Event_System.Controllers
                         return BadRequest("You cant use Existed User Name");
 
                     }
-                    var checkNameExist = _eventContext.Attendees.Any(obj => (obj.FirstName == update_Attendee.FirstName && obj.LastName == update_Attendee.LastName) && obj.Id != attendee.Id);
+                    var checkNameExist = _eventContext.Attendees.Any(obj =>  obj.Id != update_Attendee.Id && (obj.FirstName == update_Attendee.FirstName && obj.LastName == update_Attendee.LastName));
                     if (checkNameExist)
                     {
 
@@ -348,6 +366,40 @@ namespace Event_System.Controllers
 
 
 
+        }
+
+        [HttpGet("GetAttendeeById/{id}")]
+
+        public IActionResult GetAttendeeById(long id) {
+            try {
+                var GetAttendee=(from attendee in _eventContext.Attendees
+                                 where attendee.Id==id select new ShowAllAtendeeDto { 
+                                   Id = attendee.Id,
+                                   FirstName = attendee.FirstName,
+                                   LastName = attendee.LastName,
+                                   Email=attendee.Email,
+                                   Gender=attendee.Gender,
+                                   UserId=attendee.UserId,
+                                   UserName=attendee.UserNavigation.UserName,
+                                   
+                                   
+                                   
+                                 
+                                   
+                                   
+                                 
+                                 
+                                 } ).FirstOrDefault();
+                return Ok(GetAttendee);
+            
+            }
+            catch (Exception message) { 
+            
+             return BadRequest(message.Message);
+            }
+        
+        
+        
         }
 
     }

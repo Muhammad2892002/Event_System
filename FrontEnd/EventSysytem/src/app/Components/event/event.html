@@ -80,8 +80,14 @@
                 All Events
             </h4>
 
-            <button type="button"
-                class="btn btn-outline-secondary mt-2 mt-md-0">
+            <button type="button" 
+                class="btn btn-outline-secondary mt-2 mt-md-0"
+                
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal" 
+                (click)="clearForm()"
+                
+                >
                 <i class="bi bi-plus-square"></i>
                 Add Event
             </button>
@@ -116,9 +122,11 @@
                         <td>{{item.EventDate | date:'dd/MM/yyyy'}}</td>
                         <td>{{item.CreatedAt |date:'dd/MM/yyyy'}}</td>
                         <td>{{item.Description}}</td>
-                        
+
                         <td>
-                            <button type="button"
+                            <button type="button" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
+                                (click)="loadEvent(item.Id!)"
                                 class="btn btn-outline-success me-2">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
@@ -140,4 +148,97 @@
         </div>
     </div>
 
+</div>
+
+<!-- Add / Update Event Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <i class="bi bi-calendar-plus me-2"></i>
+                    Add / Update Event
+                </h5>
+                <button type="button" class="btn-close"
+                    data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form [formGroup]="eventForm">
+
+                    <h6 class="text-muted mb-2">Event Details</h6>
+                    <div class="row g-3 mb-3">
+
+                        <!-- Title -->
+                        <div class="col-md-6">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-control"
+                                formControlName="title">
+                        </div>
+
+                        <!-- Event Date -->
+                        <div class="col-md-6">
+                            <label class="form-label">Event Date</label>
+                            <input type="date" class="form-control"
+                                formControlName="eventDate">
+                        </div>
+
+                        <!-- Location Dropdown -->
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <select class="form-select"
+                                formControlName="locationId">
+                                 @for(place of allLocations; track place.Id){
+                            <option [ngValue]="place.Id">{{place.Name}}</option>
+                            }
+                             
+                            </select>
+                        </div>
+
+                        <!-- Organizer Dropdown -->
+                        <div class="col-md-6">
+                            <label class="form-label">Organizer</label>
+                            <select class="form-select"
+                                formControlName="organizerId">
+                                @for(organizer of allOrganizers; track
+                                organizer.Id){
+                                <option
+                                    [ngValue]="organizer.Id">{{organizer.Name}}</option>
+                                }
+
+                            </select>
+                        </div>
+
+                        <!-- Max Participants -->
+                        <div class="col-md-6">
+                            <label class="form-label">Max Participants</label>
+                            <input type="number" class="form-control"
+                                formControlName="maxParticipants" min="1">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" rows="3"
+                                formControlName="description"></textarea>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"
+                    (click)="saveEvent()">Save</button>
+            </div>
+
+        </div>
+    </div>
 </div>

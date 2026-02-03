@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup,ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup,ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Filter } from '../../Interface/Filter';
 import { RequestToJoinEventService } from '../../Services/request-to-join-event-service';
@@ -117,5 +117,38 @@ export class RequestsToJoinEvent {
 
 
   }
+
+  users = [
+    { id: 1, name: 'Alice Johnson' },
+    { id: 2, name: 'Bob Smith' },
+    { id: 3, name: 'Charlie Brown' },
+    { id: 4, name: 'Diana White' }
+  ];
+
+  events = [
+    { id: 1, title: 'Angular Workshop' },
+    { id: 2, title: 'React Conference' },
+    { id: 3, title: 'Vue Meetup' },
+    { id: 4, title: 'Fullstack Bootcamp' }
+  ];
+
+  // FormGroup with two dropdowns
+  requestForm: FormGroup = new FormGroup({
+    userId: new FormControl<number | null>(null, Validators.required),
+    eventId: new FormControl<number | null>(null, Validators.required)
+  });
+
+
+    saveRequest() {
+    if (this.requestForm.valid) {
+      console.log('Request Data:', this.requestForm.value);
+      // Call your API or service to save the request
+    } else {
+      console.log('Form is invalid');
+    }
+  }
+
+
+
 
 }

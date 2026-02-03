@@ -1,14 +1,14 @@
 export interface EventObj{
-    Title:string;
-    Description:string;
-    LocationName:string | null;
-    LocationId:number;
-    EventDate:string;
-    CreatedAt:string;
-    Id:number;
-    OrganizerName:string;
-    maxParticipants:number;
-    OrganizerId:number;
+    Title:string |null;
+    Description:string |null;
+    LocationName?:string | null;
+    Location:number |null;
+    EventDate:string | null;
+    CreatedAt?:string |null;
+    Id?:number |null;
+    OrganizerName?:string |null;
+    maxParticipants:number | null;
+    OrganizerId:number |null;
   
 
 

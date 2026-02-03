@@ -168,7 +168,7 @@ namespace Event_System.Controllers
                   Title = createEvent.Title,
                   Description = createEvent.Description,
                   EventDate = createEvent.EventDate,
-                  CreatedAt = createEvent.CreatedAt,
+                  CreatedAt = DateTime.Now,
                   Location = createEvent.Location,
                   MaxParticipants = createEvent.MaxParticipants,
                   OrganizerId = createEvent.OrganizerId,
@@ -184,7 +184,7 @@ namespace Event_System.Controllers
               
 
           
-                return Ok();
+                return Ok(new { massage="Successfully added"});
             
             
             }
@@ -306,6 +306,40 @@ namespace Event_System.Controllers
 
 
         
+        
+        
+        
+        }
+
+        [HttpGet("GetById/{id}")]
+        //ShowAllEvents
+
+        public IActionResult GetById(long Id)
+        {
+            try {
+                var getEvent=(from eventObj in eventContext.Events
+                             where eventObj.Id==Id
+                             select new ShowAllEvents { 
+                                 Id= eventObj.Id,
+                                 Title= eventObj.Title,
+                                 EventDate= eventObj.EventDate,
+                                 Location= eventObj.Location,
+                                 OrganizerId= eventObj.OrganizerId,
+                                 MaxParticipants= eventObj.MaxParticipants,
+                                 Description= eventObj.Description,
+                                 
+                                 
+                             
+                             }).FirstOrDefault();
+
+                return Ok(getEvent);
+            }
+            catch (Exception ex) {
+                return BadRequest(ex.Message);
+            
+            
+            }
+
         
         
         

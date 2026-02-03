@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { AttendeeService } from '../../Services/AttendeeService';
 import { Attendee } from '../../Interface/attendee';
@@ -23,6 +23,28 @@ export class AttendeeComponent {
 
 
   });
+  errorFlag:boolean=false;
+
+
+  apiErrors: string[] = [];
+
+  AttendeeForm:FormGroup=new FormGroup({
+    userName: new FormControl<string>("",Validators.required),
+    password:new FormControl<string>("",Validators.required),
+    id:new FormControl<number|null>(null),
+      firstName:new FormControl<string>("",Validators.required),
+      lastName:new FormControl<string>("",Validators.required),
+        email:new FormControl<string>("",Validators.required),
+         userId:new FormControl<number|null>(null),
+         gender:new FormControl<boolean>(false,Validators.required),
+           roleId:new FormControl<number|null>(null),
+
+      
+   
+
+  });
+
+
   paginationConfig={
     itemsPerPage:5,
     currentPage:1,
@@ -36,6 +58,7 @@ export class AttendeeComponent {
   }
   attendees: Attendee[] = [];
   click() {
+    
     this.attendees = [];
     this._attendeeService.getByCriteria(this.searchForm.value).subscribe({
       next: (element: any) => {
@@ -48,9 +71,9 @@ export class AttendeeComponent {
               lastName: x.lastName,
               email: x.email,
               userId: x.userId,
-              genderId: x.gender,
+              gender: x.gender,
               genderName: x.genderName,
-              RoleId: x.role,
+              Role: x.role,
               RoleName: x.roleName,
               isActive: x.isActive,
               password: null,
@@ -67,7 +90,13 @@ export class AttendeeComponent {
        },
 
       error: err => {
+        this.errorFlag=true;
+          this.apiErrors = err.error; 
         console.log(err.error?.message ?? err?.message ?? "Http Response Error");
+          console.log('Errors:', err.error); 
+          console.log(this.apiErrors.values);
+  
+  
 
 
 
@@ -78,6 +107,97 @@ export class AttendeeComponent {
     });
     console.log(this.attendees);
 
+
+
+
+  }
+  AddNewAttendee(){
+       let attendee :Attendee={
+      userName:this.AttendeeForm.value.userName,
+      password:this.AttendeeForm.value.password,
+      Id:this.AttendeeForm.value.id??null,
+      userId:0,
+      firstName:this.AttendeeForm.value.firstName,
+      lastName:this.AttendeeForm.value.lastName,
+      email:this.AttendeeForm.value.email,
+      gender:this.AttendeeForm.value.gender,
+      Role:0
+      
+
+    };
+
+    if(attendee.Id==null){
+        console.log(this.AttendeeForm.valid);
+ 
+    this._attendeeService.AddAtendee(attendee).subscribe({
+
+      next:(res:any)=>{
+        console.log("Successfully added");
+        this.AttendeeForm.reset();
+      },
+      error:err=>{
+        this.apiErrors=err.error.value;
+           console.log('Status:', err.status);           // 400
+    console.log('Validation errors:', err.error.value);
+    console.log(this.apiErrors.values);
+      }
+    });
+
+    }
+    else{
+      this._attendeeService.EditAtendee(attendee).subscribe({
+          next:(res:any)=>{
+        console.log("Successfully updated");
+        this.AttendeeForm.reset();
+      },
+      error:err=>{
+        this.apiErrors=err.error.value;
+           console.log('Status:', err.status);           // 400
+    console.log('Validation errors:', err.error.value);
+    console.log(this.apiErrors.values);
+      }
+
+      });
+   
+      
+    }
+  
+   
+  }
+  ClearForm(){
+    this.AttendeeForm.reset();
+  }
+
+  loadAttendeeForm(id?:number|null){
+     if(!id){
+      return;
+     }
+      this._attendeeService.getAttendeeById(id).subscribe({
+        next:(res:any)=>{
+          this.AttendeeForm.patchValue({
+            userName:res.userName,
+            id:res.id,
+            firstName:res.firstName,
+            lastName:res.lastName,
+            email:res.email,
+            userId:res.userId,
+            gender:res.gender,
+            roleId:null,
+            password:null
+
+            
+          });
+        
+
+        },
+        error:err=>{
+          console.log(err);
+        }
+
+      
+      });
+      
+    
 
 
 

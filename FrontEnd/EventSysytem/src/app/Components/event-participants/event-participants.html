@@ -61,7 +61,8 @@
             </h4>
 
             <button type="button"
-                class="btn btn-outline-secondary mt-2 mt-md-0">
+                class="btn btn-outline-secondary mt-2 mt-md-0"  data-bs-toggle="modal"
+        data-bs-target="#exampleModal">
                 <i class="bi bi-plus-square"></i>
                 Add Participant
             </button>
@@ -94,7 +95,8 @@
                             <td>{{item.organizerName}}</td>
                             <td>{{item.HeldAt | date:'dd-MM-YYYY'}}</td>
                             <td>
-                                <button type="button" class="btn btn-outline-success me-2">
+                                <button type="button" class="btn btn-outline-success me-2"  data-bs-toggle="modal"
+        data-bs-target="#exampleModal">
                                     <i class="bi bi-pencil-square"></i> 
                                 </button>
                                 <button type="button" class="btn btn-outline-danger">
@@ -120,3 +122,53 @@
     </div>
 
 </div>
+
+<!-- Modal: Assign Participant to Event -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="participantEventLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="participantEventLabel">
+          <i class="bi bi-person-plus me-2"></i>
+          Assign Participant to Event
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <form [formGroup]="participantEventForm">
+
+          <!-- Participant Dropdown -->
+          <div class="mb-3">
+            <label class="form-label">Participant</label>
+            <select class="form-select" formControlName="participantId">
+              <option value="">Select participant</option>
+              <option *ngFor="let p of participants" [value]="p.id">{{ p.name }}</option>
+            </select>
+          </div>
+
+          <!-- Event Dropdown -->
+          <div class="mb-3">
+            <label class="form-label">Event</label>
+            <select class="form-select" formControlName="eventId">
+              <option value="">Select event</option>
+              <option *ngFor="let e of events" [value]="e.id">{{ e.title }}</option>
+            </select>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="saveParticipantEvent()">Save</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+

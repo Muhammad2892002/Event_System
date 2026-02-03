@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Attendee } from '../Interface/attendee';
 
 @Injectable({
   providedIn: 'root',
@@ -27,5 +28,15 @@ export class AttendeeService {
     return this._http.get(this.apiUrl+'/GetAllOrganizers');
 
   
-  } 
+  }
+  AddAtendee(Attendee:Attendee){
+    return this._http.post(this.apiUrl+"/Create",Attendee);
+  }
+  
+  getAttendeeById(id:number){
+    return this._http.get(this.apiUrl+`/GetAttendeeById/${id}`)
+  }
+    EditAtendee(Attendee:Attendee){
+    return this._http.put(this.apiUrl+"/Update",Attendee);
+  }
 }

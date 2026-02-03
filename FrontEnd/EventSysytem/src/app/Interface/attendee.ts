@@ -1,17 +1,17 @@
 export interface Attendee {
 
-    userName:string;
-    Id:number;
-    firstName:string;
-    lastName:string;
-    email:string;
-    userId:number;
-    genderId:boolean;
-    genderName:string;
-    RoleId:number;
-    RoleName:string;
-    isActive:boolean;
-    password:string|null;
+    userName?:string|null;
+    Id?:number|null|undefined;
+    firstName?:string |null;
+    lastName?:string |null;
+    email ?:string |null;
+    userId?:number|null;
+    gender:boolean;
+    genderName?:string|null;
+    Role?:number|null;
+    RoleName?:string|null;
+    isActive?:boolean|null;
+    password?:string|null;
     
 
 

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { FormGroup, FormControl,ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl,ReactiveFormsModule, Validators } from '@angular/forms';
 import { Filter } from '../../Interface/Filter';
 import { EventParticipantsService } from '../../Services/EventParticipantsService';
 import { EventParticipant } from '../../Interface/event-participant';
@@ -98,6 +98,34 @@ loadEventsForParticipant(){
     });
 
 }
+  participants = [
+    { id: 1, name: 'Alice Johnson' },
+    { id: 2, name: 'Bob Smith' },
+    { id: 3, name: 'Charlie Brown' },
+    { id: 4, name: 'Diana White' }
+  ];
+
+  eventsName = [
+    { id: 1, title: 'Angular Workshop' },
+    { id: 2, title: 'React Conference' },
+    { id: 3, title: 'Vue Meetup' },
+    { id: 4, title: 'Fullstack Bootcamp' }
+  ];
+
+  // FormGroup with two dropdowns
+  participantEventForm: FormGroup = new FormGroup({
+    participantId: new FormControl<number | null>(null, Validators.required),
+    eventId: new FormControl<number | null>(null, Validators.required)
+  });
+
+    saveParticipantEvent() {
+    if (this.participantEventForm.valid) {
+      console.log('Selected:', this.participantEventForm.value);
+      // Call your API or service here
+    } else {
+      console.log('Form is invalid');
+    }
+  }
 
 
 }
