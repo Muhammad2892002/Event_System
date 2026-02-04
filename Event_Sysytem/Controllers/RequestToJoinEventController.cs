@@ -235,13 +235,17 @@ namespace Event_System.Controllers
                     };
                     _context.EventParticipants.Add(newParticipants);
                     requestCheck.Status= (int)Enums.Status.Approved;
-                    _context.SaveChanges();
+                   
                     
                 
                 
                 }
+                requestCheck.EventId = request.EventId;
+                requestCheck.UserId = request.UserId;
 
-                    return Ok("Your Request is approved");
+                _context.SaveChanges();
+
+                return Ok("Your Request is approved");
             }
             catch (Exception ex) {
 
