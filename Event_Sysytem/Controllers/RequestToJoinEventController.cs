@@ -190,7 +190,7 @@ namespace Event_System.Controllers
         }
         //[Authorize(Roles = "Organizer,Admin")]
         [HttpPut("Update")]
-        public IActionResult UpdateRequest([FromBody]EventRequestDto request)
+        public IActionResult Update([FromBody]EventRequestDto request)
         {
             try {
                 var isUserExist = _context.Attendees.Any(obj => obj.Id == request.UserId);
@@ -351,6 +351,30 @@ namespace Event_System.Controllers
 
 
 
+        }
+
+        [HttpGet("GetRequestById/{id}")]
+        public IActionResult GetRequestById(long id)
+        {
+            try {
+                var getRequest=_context.EventRequests.Where(obj=>obj.Id==id).Select(req=>new ShowAllEventRequestsDto {
+                  Id=req.Id,
+                  EventId=req.EventId,
+                  UserId=req.UserId
+                  
+                
+                
+                }).FirstOrDefault();
+
+                return Ok(getRequest);
+            }
+            catch (Exception ex) { 
+            
+             return BadRequest(ex.Message);
+            
+            }
+        
+        
         }
 
 

@@ -7,6 +7,7 @@ import { EventRequest } from '../../Interface/event-request';
 import { DatePipe } from '@angular/common';
 import { AttendeeService } from '../../Services/AttendeeService';
 import { EventService } from '../../Services/event-service';
+import { AddAndUpdateRequest } from '../../Interface/AddRequestAndUpdate';
 
 @Component({
   selector: 'app-requests-to-join-event',
@@ -124,6 +125,7 @@ export class RequestsToJoinEvent {
 
   }
   loadAddListsAndUpdate(){
+    this.requestForm.reset();
     this.allAtendee();
     this.LoadallEvents()
   }
@@ -144,16 +146,54 @@ export class RequestsToJoinEvent {
 
   // FormGroup with two dropdowns
   requestForm: FormGroup = new FormGroup({
+    Id:new FormControl<number|null>(null),
     userId: new FormControl<number | null>(null, Validators.required),
     eventId: new FormControl<number | null>(null, Validators.required)
   });
 
 
     saveRequest() {
+      let request:AddAndUpdateRequest={
+        id:this.requestForm.value.Id??0,
+        EventId:this.requestForm.value.eventId,
+        UserId:this.requestForm.value.userId,
+        status:null,
+        RequestedAt:null
+
+      };
     if (this.requestForm.valid) {
-      console.log('Request Data:', this.requestForm.value);
-      // Call your API or service to save the request
-    } else {
+      if(request.id==0){
+       this.requestToJoinEventService.AddRequestToJoinEvent(request).subscribe({
+        next:(res:any)=>{
+          console.log("Successfully Added");
+        },
+        error:err=>{
+          console.log(err.error);
+        }
+
+
+       });
+      }
+      else{
+
+         this.requestToJoinEventService.EditRequestToJoinEvent(request).subscribe({
+        next:(res:any)=>{
+          console.log("Successfully Added");
+        },
+        error:err=>{
+          console.log(err.error);
+        }
+
+
+       });
+        
+
+
+      }
+   
+    }
+    
+    else {
       console.log('Form is invalid');
     }
   }
@@ -203,6 +243,30 @@ export class RequestsToJoinEvent {
 
 
       });
+
+
+  }
+
+  loadRequestAndLoadLists(id:number){
+
+    this.loadAddListsAndUpdate();
+    this.requestToJoinEventService.GetRequestById(id).subscribe({
+      next:(res:any)=>{
+        this.requestForm.patchValue({
+          Id:res.id,
+          userId:res.userId,
+          eventId:res.eventId
+
+        });
+
+      },
+
+      error:err=>{
+        console.log(err.error);
+      }
+
+
+    })
 
 
   }

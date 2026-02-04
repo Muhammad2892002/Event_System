@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AddAndUpdateRequest } from '../Interface/AddRequestAndUpdate';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +25,22 @@ export class RequestToJoinEventService {
     params=params.set("RequestedAt",searchObj?.requestedAt??"");  
     return this._http.get(this.apiurl+"/GetByCriteria",{params:params});
   }
+
+  AddRequestToJoinEvent(request:AddAndUpdateRequest){
+    return this._http.post(this.apiurl+"/CreateRequest",request);
+  }
+
+
+    GetRequestById(id:number){
+      return this._http.get(this.apiurl+`/GetRequestById/${id}`)
+
+
+    }
+
+      EditRequestToJoinEvent(request:AddAndUpdateRequest){
+    return this._http.put(this.apiurl+"/Update",request);
+  }
+
 
   
   

@@ -7,6 +7,7 @@ import { EventParticipant } from '../../Interface/event-participant';
 import { DatePipe } from '@angular/common';
 import { AttendeeService } from '../../Services/AttendeeService';
 import { EventService } from '../../Services/event-service';
+import { AddAndUpdateParticipant } from '../../Interface/AddParticipant';
 
 @Component({
   selector: 'app-event-participants',
@@ -16,7 +17,7 @@ import { EventService } from '../../Services/event-service';
 })
 export class EventParticipants {
   changePage(pageNumber: number) {
-    console.log('Changing page to:', pageNumber);
+    this.paginationConfig.currentPage=pageNumber;
   }
   constructor(private eventParticipantsService: EventParticipantsService
     ,private participantServ:AttendeeService, private eventServ: EventService) {}
@@ -26,6 +27,7 @@ export class EventParticipants {
   });
 
   addAndUpdateParticipant:FormGroup=new FormGroup({
+    Id:new FormControl<number|null>(0),
     participantId:new FormControl<number>(0,Validators.required),
     eventId:new FormControl<number>(0,Validators.required)
 
@@ -120,6 +122,7 @@ loadEventsForParticipant(){
   
   ];
   loadAddListsAndUpdate(){
+    this.addAndUpdateParticipant.reset();
     this.allAtendee();
     this.LoadallEvents()
   }
@@ -132,8 +135,16 @@ loadEventsForParticipant(){
   });
 
     saveParticipantEvent() {
+      let participant:AddAndUpdateParticipant={
+        Id:this.addAndUpdateParticipant.value.Id,
+        participantId:this.addAndUpdateParticipant.value.participantId,
+        eventId:this.addAndUpdateParticipant.value.eventId,
+
+      };
+
     if (this.addAndUpdateParticipant.valid) {
-      this.eventParticipantsService.AddNewParticipant(this.addAndUpdateParticipant.value).subscribe({
+      if(participant.Id==null){
+   this.eventParticipantsService.AddNewParticipant(participant).subscribe({
         next:(res:any)=>{
           console.log("added successgully");
         },
@@ -142,8 +153,23 @@ loadEventsForParticipant(){
         }
       });
      
+
+      }
+      else{
+          this.eventParticipantsService.updateParticipant(participant).subscribe({
+        next:(res:any)=>{
+          console.log("updated successfully");
+        },
+        error:err=>{
+          console.log(err);
+        }
+      });
+      }
+   
       // Call your API or service here
-    } else {
+    }
+    
+    else {
       console.log('Form is invalid');
     }
   }
@@ -203,8 +229,36 @@ loadEventsForParticipant(){
 
 
   LoadParticipant(id:number){
+    this.eventParticipantsService.GetParticipant(id).subscribe({
+      
 
-    
+      next:(res:any)=>{
+        this.addAndUpdateParticipant.patchValue({
+          Id:res.id,
+            participantId:res.attendeeId,
+    eventId:res.eventId
+          
+        });
+
+        console.log(this.addAndUpdateParticipant);
+
+
+      },
+
+      error:err=>{
+        console.log(err.error.value);
+      }
+    });
+
+
+  }
+  loadListAndGetParticipant(id:number){
+    this.addAndUpdateParticipant.reset();
+    this.loadAddListsAndUpdate();
+    this.LoadParticipant(id);
+
+
+
   }
 
 

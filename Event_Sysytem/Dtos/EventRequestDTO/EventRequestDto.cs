@@ -18,9 +18,9 @@ namespace Event_System.Dtos.EventRequestDto
        
 
 
-        public int Status { get; set; } // e.g., "Pending", "Approved", "Rejected"
+        public int? Status { get; set; } // e.g., "Pending", "Approved", "Rejected"
 
 
-        public DateTime RequestedAt { get; set; }
+        public DateTime? RequestedAt { get; set; }
     }
 }

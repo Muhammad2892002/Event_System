@@ -354,5 +354,30 @@ namespace Event_System.Controllers
 
             }
         }
+
+        [HttpGet("GetparticipantById/{Id}")]
+
+        public IActionResult GetparticipantById(long Id)
+        {
+            try {
+                var getParticipant = _eventContext.EventParticipants.Where(obj => obj.Id == Id).Select(obj=>new ShowAllParticipantsDto {
+                  Id= obj.Id,
+                  EventId= obj.EventId,
+                  AttendeeId= obj.UserId
+                  
+                
+                }).FirstOrDefault();
+
+
+                return Ok(getParticipant);
+            } 
+            catch (Exception ex) { 
+                return BadRequest(ex.Message);
+            
+            }
+        
+        
+        
+        }
     }
 }

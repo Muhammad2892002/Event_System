@@ -37,5 +37,18 @@ export class EventParticipantsService {
 
 
   }
+
+  GetParticipant(Id:number){
+
+    return this._http.get(this.apiUrl+`/GetparticipantById/${Id}`);
+
+  }
+
+    updateParticipant(participantObj:AddAndUpdateParticipant){
+
+    return this._http.put(this.apiUrl+"/EditRequest",participantObj)
+
+
+  }
   
 }
