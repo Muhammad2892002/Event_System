@@ -5,6 +5,8 @@ import { Filter } from '../../Interface/Filter';
 import { EventParticipantsService } from '../../Services/EventParticipantsService';
 import { EventParticipant } from '../../Interface/event-participant';
 import { DatePipe } from '@angular/common';
+import { AttendeeService } from '../../Services/AttendeeService';
+import { EventService } from '../../Services/event-service';
 
 @Component({
   selector: 'app-event-participants',
@@ -16,12 +18,24 @@ export class EventParticipants {
   changePage(pageNumber: number) {
     console.log('Changing page to:', pageNumber);
   }
-  constructor(private eventParticipantsService: EventParticipantsService) {}
+  constructor(private eventParticipantsService: EventParticipantsService
+    ,private participantServ:AttendeeService, private eventServ: EventService) {}
   searchParticipants:FormGroup=new FormGroup({
     participantId:new FormControl<number | null>(null),
     eventId:new FormControl<number | null>(null),
   });
+
+  addAndUpdateParticipant:FormGroup=new FormGroup({
+    participantId:new FormControl<number>(0,Validators.required),
+    eventId:new FormControl<number>(0,Validators.required)
+
+  });
+ 
+   
+
+
   participant:Filter[]=[];
+
   events:Filter[]=[];
   allEventParticipants:EventParticipant[]=[];
   ngOnInit(){
@@ -99,18 +113,17 @@ loadEventsForParticipant(){
 
 }
   participants = [
-    { id: 1, name: 'Alice Johnson' },
-    { id: 2, name: 'Bob Smith' },
-    { id: 3, name: 'Charlie Brown' },
-    { id: 4, name: 'Diana White' }
+
   ];
 
   eventsName = [
-    { id: 1, title: 'Angular Workshop' },
-    { id: 2, title: 'React Conference' },
-    { id: 3, title: 'Vue Meetup' },
-    { id: 4, title: 'Fullstack Bootcamp' }
+  
   ];
+  loadAddListsAndUpdate(){
+    this.allAtendee();
+    this.LoadallEvents()
+  }
+
 
   // FormGroup with two dropdowns
   participantEventForm: FormGroup = new FormGroup({
@@ -119,12 +132,79 @@ loadEventsForParticipant(){
   });
 
     saveParticipantEvent() {
-    if (this.participantEventForm.valid) {
-      console.log('Selected:', this.participantEventForm.value);
+    if (this.addAndUpdateParticipant.valid) {
+      this.eventParticipantsService.AddNewParticipant(this.addAndUpdateParticipant.value).subscribe({
+        next:(res:any)=>{
+          console.log("added successgully");
+        },
+        error:err=>{
+          console.log(err);
+        }
+      });
+     
       // Call your API or service here
     } else {
       console.log('Form is invalid');
     }
+  }
+
+    AllParticipants :Filter[]=[];
+  AllEvents:Filter[]=[];
+
+    allAtendee(){
+      this.AllParticipants=[{Id:null,Name:'Choose Participant'},];
+
+      this.participantServ.getByCriteria(null)?.subscribe({
+        next:(res:any)=>{
+          res.forEach((x:any)=>{
+            let attendee:Filter={
+              Id:x.id,
+              Name:x.firstName+x.lastName
+            }
+            this.AllParticipants.push(attendee);
+          })
+          console.log(this.AllParticipants);
+        },
+        error:err=>{
+          console.log(err.error);
+        }
+
+
+
+
+      });
+    }
+
+   LoadallEvents(){
+       this.AllEvents=[{Id:null,Name:'Choose Event'},];
+
+      this.eventServ.getAllEvents(null)?.subscribe({
+        next:(res:any)=>{
+          res.forEach((x:any)=>{
+            let attendee:Filter={
+              Id:x.id,
+              Name:x.title
+            }
+            this.AllEvents.push(attendee);
+          })
+          console.log(this.AllParticipants);
+        },
+        error:err=>{
+          console.log(err.error);
+        }
+
+
+
+
+      });
+
+
+  }
+
+
+  LoadParticipant(id:number){
+
+    
   }
 
 

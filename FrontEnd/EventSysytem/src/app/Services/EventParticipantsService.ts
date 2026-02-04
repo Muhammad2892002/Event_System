@@ -1,5 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { EventParticipant } from '../Interface/event-participant';
+import { AddAndUpdateParticipant } from '../Interface/AddParticipant';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +29,13 @@ export class EventParticipantsService {
 
 
     return this._http.get(this.apiUrl+"/GetByCriteria",{params:params});
+  }
+
+  AddNewParticipant(participantObj:AddAndUpdateParticipant){
+
+    return this._http.post(this.apiUrl+"/AddNewParticipants",participantObj)
+
+
   }
   
 }

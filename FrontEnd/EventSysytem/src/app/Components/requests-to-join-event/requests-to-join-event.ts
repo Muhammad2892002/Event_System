@@ -5,6 +5,8 @@ import { Filter } from '../../Interface/Filter';
 import { RequestToJoinEventService } from '../../Services/request-to-join-event-service';
 import { EventRequest } from '../../Interface/event-request';
 import { DatePipe } from '@angular/common';
+import { AttendeeService } from '../../Services/AttendeeService';
+import { EventService } from '../../Services/event-service';
 
 @Component({
   selector: 'app-requests-to-join-event',
@@ -21,7 +23,11 @@ export class RequestsToJoinEvent {
   requestedAt:new FormControl<string | null>(null),
  
   });
-  constructor(private requestToJoinEventService:RequestToJoinEventService) {}
+  constructor(private requestToJoinEventService:RequestToJoinEventService,
+    private participantServ:AttendeeService,
+   private eventServ: EventService) {}
+      AllParticipants :Filter[]=[];
+ 
   allAttendee:Filter[]=[];
   allEvents:Filter[]=[];
   allrequests:EventRequest[]=[];
@@ -117,6 +123,10 @@ export class RequestsToJoinEvent {
 
 
   }
+  loadAddListsAndUpdate(){
+    this.allAtendee();
+    this.LoadallEvents()
+  }
 
   users = [
     { id: 1, name: 'Alice Johnson' },
@@ -146,6 +156,55 @@ export class RequestsToJoinEvent {
     } else {
       console.log('Form is invalid');
     }
+  }
+    allAtendee(){
+      this.AllParticipants=[{Id:null,Name:'Choose Participant'},];
+
+      this.participantServ.getByCriteria(null)?.subscribe({
+        next:(res:any)=>{
+          res.forEach((x:any)=>{
+            let attendee:Filter={
+              Id:x.id,
+              Name:x.firstName+x.lastName
+            }
+            this.AllParticipants.push(attendee);
+          })
+          console.log(this.AllParticipants);
+        },
+        error:err=>{
+          console.log(err.error);
+        }
+
+
+
+
+      });
+    }
+
+  LoadallEvents(){
+       this.allEvents=[{Id:null,Name:'Choose Event'},];
+
+      this.eventServ.getAllEvents(null)?.subscribe({
+        next:(res:any)=>{
+          res.forEach((x:any)=>{
+            let attendee:Filter={
+              Id:x.id,
+              Name:x.title
+            }
+            this.allEvents.push(attendee);
+          })
+          console.log(this.AllParticipants);
+        },
+        error:err=>{
+          console.log(err.error);
+        }
+
+
+
+
+      });
+
+
   }
 
 

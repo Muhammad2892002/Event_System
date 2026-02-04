@@ -77,6 +77,7 @@
 
             <button type="button" data-bs-toggle="modal"
                 data-bs-target="#exampleModal"
+                (click)=" loadAddListsAndUpdate()"
                 class="btn btn-outline-secondary mt-2 mt-md-0">
                 <i class="bi bi-plus-square"></i>
                 Add Rquest
@@ -129,6 +130,7 @@
                         <td>
                             <button type="button" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal"
+                                  (click)=" loadAddListsAndUpdate()"
                                 class="btn btn-outline-success me-2">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
@@ -177,9 +179,9 @@
                     <div class="mb-3">
                         <label class="form-label">User</label>
                         <select class="form-select" formControlName="userId">
-                            <option value>Select user</option>
-                            <option *ngFor="let user of users"
-                                [value]="user.id">{{ user.name }}</option>
+                              @for( item of AllParticipants;track item.Id){
+               <option [value]="item.Id">{{item.Name}}</option>
+                }
                         </select>
                     </div>
 
@@ -187,9 +189,10 @@
                     <div class="mb-3">
                         <label class="form-label">Event</label>
                         <select class="form-select" formControlName="eventId">
-                            <option value>Select event</option>
-                            <option *ngFor="let event of events"
-                                [value]="event.id">{{ event.title }}</option>
+                       @for(item of allEvents;track item.Id){
+                         <option [value]="item.Id">{{item.Name}}</option>
+
+                       }
                         </select>
                     </div>
 

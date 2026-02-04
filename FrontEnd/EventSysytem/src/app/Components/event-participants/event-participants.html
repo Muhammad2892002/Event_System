@@ -61,8 +61,10 @@
             </h4>
 
             <button type="button"
-                class="btn btn-outline-secondary mt-2 mt-md-0"  data-bs-toggle="modal"
-        data-bs-target="#exampleModal">
+                class="btn btn-outline-secondary mt-2 mt-md-0"
+                data-bs-toggle="modal"
+                (click)="loadAddListsAndUpdate()"
+                data-bs-target="#exampleModal">
                 <i class="bi bi-plus-square"></i>
                 Add Participant
             </button>
@@ -85,33 +87,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                      @for (item of allEventParticipants |paginate:paginationConfig; track item.Id; let i = $index) {
+                    @for (item of allEventParticipants
+                    |paginate:paginationConfig; track item.Id; let i = $index) {
                     <tr>
-                         <td>{{$index+1}}</td>
-                         <td>{{item.AttendeeName}}</td>
-                            <td>{{item.email}}</td>
-                            <td>{{item.EventName}}</td>
-                            <td>{{item.locationName}}</td>
-                            <td>{{item.organizerName}}</td>
-                            <td>{{item.HeldAt | date:'dd-MM-YYYY'}}</td>
-                            <td>
-                                <button type="button" class="btn btn-outline-success me-2"  data-bs-toggle="modal"
-        data-bs-target="#exampleModal">
-                                    <i class="bi bi-pencil-square"></i> 
-                                </button>
-                                <button type="button" class="btn btn-outline-danger">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                        <td>{{$index+1}}</td>
+                        <td>{{item.AttendeeName}}</td>
+                        <td>{{item.email}}</td>
+                        <td>{{item.EventName}}</td>
+                        <td>{{item.locationName}}</td>
+                        <td>{{item.organizerName}}</td>
+                        <td>{{item.HeldAt | date:'dd-MM-YYYY'}}</td>
+                        <td>
+                            <button type="button"
+                                class="btn btn-outline-success me-2"
+                                  (click)=" loadAddListsAndUpdate()"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button type="button"
+                            (click)="LoadParticipant(item.Id)"
+                                class="btn btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
 
+                        </td>
 
-                            </td>
-                       
-
-                        
-                       
-                    
                     </tr>
-                }
+                    }
 
                 </tbody>
 
@@ -124,51 +127,60 @@
 </div>
 
 <!-- Modal: Assign Participant to Event -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="participantEventLabel" aria-hidden="true">
-  <div class="modal-dialog modal-md modal-dialog-centered">
-    <div class="modal-content">
+<div class="modal fade" id="exampleModal" tabindex="-1"
+    aria-labelledby="participantEventLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
 
-      <!-- Header -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="participantEventLabel">
-          <i class="bi bi-person-plus me-2"></i>
-          Assign Participant to Event
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="participantEventLabel">
+                    <i class="bi bi-person-plus me-2"></i>
+                    Assign Participant to Event
+                </h5>
+                <button type="button" class="btn-close"
+                    data-bs-dismiss="modal"></button>
+            </div>
 
-      <!-- Body -->
-      <div class="modal-body">
-        <form [formGroup]="participantEventForm">
+            <!-- Body -->
+            <div class="modal-body">
+                <form [formGroup]="addAndUpdateParticipant">
 
-          <!-- Participant Dropdown -->
-          <div class="mb-3">
-            <label class="form-label">Participant</label>
-            <select class="form-select" formControlName="participantId">
-              <option value="">Select participant</option>
-              <option *ngFor="let p of participants" [value]="p.id">{{ p.name }}</option>
-            </select>
-          </div>
+                    <!-- Participant Dropdown -->
+                    <div class="mb-3">
+                        <label class="form-label">Participant</label>
 
-          <!-- Event Dropdown -->
-          <div class="mb-3">
-            <label class="form-label">Event</label>
-            <select class="form-select" formControlName="eventId">
-              <option value="">Select event</option>
-              <option *ngFor="let e of events" [value]="e.id">{{ e.title }}</option>
-            </select>
-          </div>
+                        <select class="form-select"
+                            formControlName="participantId">
+                            @for( item of AllParticipants;track item.Id){
+                            <option [value]="item.Id">{{item.Name}}</option>
+                            }
 
-        </form>
-      </div>
+                        </select>
+                    </div>
 
-      <!-- Footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" (click)="saveParticipantEvent()">Save</button>
-      </div>
+                    <!-- Event Dropdown -->
+                    <div class="mb-3">
+                        <label class="form-label">Event</label>
+                        <select class="form-select" formControlName="eventId">
+                               @for( item of AllEvents;track item.Id){
+                            <option [value]="item.Id">{{item.Name}}</option>
+                            }
 
+                        </select>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"
+                    (click)="saveParticipantEvent()">Save</button>
+            </div>
+
+        </div>
     </div>
-  </div>
 </div>
-

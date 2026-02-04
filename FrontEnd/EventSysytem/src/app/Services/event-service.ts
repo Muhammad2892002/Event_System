@@ -10,15 +10,21 @@ export class EventService {
   apiUrl:string="https://localhost:7087/api/Event";
 
   getAllEvents(searchEvent:any){
+    if(searchEvent!=null){
     let params=new HttpParams();
     params=params.set("title",searchEvent?.title??"");
     params=params.set("eventDate",searchEvent?.eventDate??"");
     params=params.set("organizerId",searchEvent?.organizerId??"");
     params=params.set("createdAt",searchEvent?.createdAt??"");
     params=params.set("LocationId",searchEvent?.LocationId??"");
-
-
     return this._http.get(this.apiUrl+"/GetByCriteria",{params:params});
+    }
+    else{
+   return this._http.get(this.apiUrl+"/GetByCriteria");
+    }
+
+
+ 
 
   }
   AddEvent(event:EventObj){

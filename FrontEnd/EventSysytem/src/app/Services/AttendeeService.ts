@@ -14,12 +14,19 @@ export class AttendeeService {
 
   getByCriteria(searchObj:any){
     let params=new HttpParams();
+    if(searchObj==null){
+return this._http.get(this.apiUrl+'/GetByCriteria');
+
+    }
+    else{
     params=params.set("AteendeeFirstName",searchObj?.FirstName??"");
     params=params.set("AteendeeLastName",searchObj?.LastName??"");
     params=params.set("Role",searchObj?.RoleId??"");
     params=params.set("Gender",searchObj?.GenderId??"");
     params=params.set("IsActivated",searchObj?.ISActivated??"");
     return this._http.get(this.apiUrl+'/GetByCriteria',{params:params});
+    
+    }
 
 
 

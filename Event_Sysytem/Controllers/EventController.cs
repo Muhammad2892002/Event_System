@@ -249,7 +249,7 @@ namespace Event_System.Controllers
                  return BadRequest("Event does not exist");
                 }
 
-                    return Ok();
+                    return Ok(new { massage="successfully updated"});
             }
             catch (Exception ex) { 
             
