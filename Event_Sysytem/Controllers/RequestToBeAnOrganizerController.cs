@@ -134,6 +134,7 @@ namespace Event_System.Controllers
 
                             attendee.Role = 3;
                             _eventContext.SaveChanges();
+                            return Ok();
 
 
                         }
