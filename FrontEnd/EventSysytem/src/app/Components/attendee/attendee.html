@@ -241,6 +241,17 @@
                                 <option [ngValue]="false">Female</option>
                             </select>
                         </div>
+
+
+                         <div class="col-md-4">
+                            <label class="form-label">Role</label>
+                            <select class="form-select"
+                                formControlName="roleId">
+                                <option value>Select Role</option>
+                                <option [ngValue]="3">Organizer</option>
+                                <option [ngValue]="4">Attendee</option>
+                            </select>
+                        </div>
                     </div>
 
                 </form>

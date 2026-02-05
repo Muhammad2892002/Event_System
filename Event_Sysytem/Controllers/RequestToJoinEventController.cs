@@ -221,6 +221,8 @@ namespace Event_System.Controllers
                 {
 
                     requestCheck.Status = (int)Enums.Status.Rejected;
+                    _context.SaveChanges();
+
                     return Ok("Your Request is rejected");
 
 
@@ -240,8 +242,7 @@ namespace Event_System.Controllers
                 
                 
                 }
-                requestCheck.EventId = request.EventId;
-                requestCheck.UserId = request.UserId;
+            
 
                 _context.SaveChanges();
 

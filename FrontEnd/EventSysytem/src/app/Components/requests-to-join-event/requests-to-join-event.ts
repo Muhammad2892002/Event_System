@@ -124,11 +124,7 @@ export class RequestsToJoinEvent {
 
 
   }
-  loadAddListsAndUpdate(){
-    this.requestForm.reset();
-    this.allAtendee();
-    this.LoadallEvents()
-  }
+
 
   users = [
     { id: 1, name: 'Alice Johnson' },
@@ -197,79 +193,11 @@ export class RequestsToJoinEvent {
       console.log('Form is invalid');
     }
   }
-    allAtendee(){
-      this.AllParticipants=[{Id:null,Name:'Choose Participant'},];
-
-      this.participantServ.getByCriteria(null)?.subscribe({
-        next:(res:any)=>{
-          res.forEach((x:any)=>{
-            let attendee:Filter={
-              Id:x.id,
-              Name:x.firstName+x.lastName
-            }
-            this.AllParticipants.push(attendee);
-          })
-          console.log(this.AllParticipants);
-        },
-        error:err=>{
-          console.log(err.error);
-        }
+  
 
 
 
 
-      });
-    }
-
-  LoadallEvents(){
-       this.allEvents=[{Id:null,Name:'Choose Event'},];
-
-      this.eventServ.getAllEvents(null)?.subscribe({
-        next:(res:any)=>{
-          res.forEach((x:any)=>{
-            let attendee:Filter={
-              Id:x.id,
-              Name:x.title
-            }
-            this.allEvents.push(attendee);
-          })
-          console.log(this.AllParticipants);
-        },
-        error:err=>{
-          console.log(err.error);
-        }
-
-
-
-
-      });
-
-
-  }
-
-  loadRequestAndLoadLists(id:number){
-
-    this.loadAddListsAndUpdate();
-    this.requestToJoinEventService.GetRequestById(id).subscribe({
-      next:(res:any)=>{
-        this.requestForm.patchValue({
-          Id:res.id,
-          userId:res.userId,
-          eventId:res.eventId
-
-        });
-
-      },
-
-      error:err=>{
-        console.log(err.error);
-      }
-
-
-    })
-
-
-  }
 
 
 

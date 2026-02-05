@@ -34,11 +34,13 @@
                 <!-- Actions -->
                 <div class="d-flex justify-content-end gap-2">
                     <button type="button" class="btn btn-sm btn-outline-success"
+                    (click)="sendJoinRequestResult(item,true)"
                         title="Accept">
                         <i class="bi bi-check-lg"></i> Accept
                     </button>
 
                     <button type="button" class="btn btn-sm btn-outline-danger"
+                    (click)="sendJoinRequestResult(item,false)"
                         title="Reject">
                         <i class="bi bi-x-lg"></i> Reject
                     </button>
@@ -86,11 +88,17 @@
                 <!-- Actions -->
                 <div class="d-flex justify-content-end gap-2">
                     <button type="button" class="btn btn-sm btn-outline-success"
+                    (click)="sendJoinRequestToBeOrganizerResult(item,true)"
+                   
                         title="Accept">
+                        
+                        
                         <i class="bi bi-check-lg"></i> Accept
                     </button>
 
                     <button type="button" class="btn btn-sm btn-outline-danger"
+                    (click)="sendJoinRequestToBeOrganizerResult(item,false)"
+                     
                         title="Reject">
                         <i class="bi bi-x-lg"></i> Reject
                     </button>

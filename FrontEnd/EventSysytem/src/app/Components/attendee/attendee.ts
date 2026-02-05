@@ -121,7 +121,7 @@ export class AttendeeComponent {
       lastName:this.AttendeeForm.value.lastName,
       email:this.AttendeeForm.value.email,
       gender:this.AttendeeForm.value.gender,
-      Role:0
+      Role:this.AttendeeForm.value.roleId
       
 
     };
@@ -136,10 +136,9 @@ export class AttendeeComponent {
         this.AttendeeForm.reset();
       },
       error:err=>{
-        this.apiErrors=err.error.value;
-           console.log('Status:', err.status);           // 400
-    console.log('Validation errors:', err.error.value);
-    console.log(this.apiErrors.values);
+                console.log('FULL ERROR:', err);
+      console.log('API Validation Errors:', err.error?.errors);
+   
       }
     });
 
@@ -151,10 +150,10 @@ export class AttendeeComponent {
         this.AttendeeForm.reset();
       },
       error:err=>{
-        this.apiErrors=err.error.value;
-           console.log('Status:', err.status);           // 400
-    console.log('Validation errors:', err.error.value);
-    console.log(this.apiErrors.values);
+           console.log('FULL ERROR:', err);
+      console.log('API Validation Errors:', err.error?.errors);
+
+
       }
 
       });
@@ -182,7 +181,7 @@ export class AttendeeComponent {
             email:res.email,
             userId:res.userId,
             gender:res.gender,
-            roleId:null,
+            roleId:res.role,
             password:null
 
             
@@ -191,6 +190,7 @@ export class AttendeeComponent {
 
         },
         error:err=>{
+          console.log(err.error.value);
           console.log(err);
         }
 

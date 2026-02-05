@@ -166,7 +166,7 @@ namespace Event_System.Controllers
                         UserId = user.Id,
                         UserNavigation = user,
                         CreatedAt = DateTime.Now,
-                        Role = 4,
+                        Role = createNewAttendee.Role??4,
 
 
 
@@ -244,6 +244,7 @@ namespace Event_System.Controllers
                     attendee.CreatedAt = attendee.CreatedAt;
                     attendee.Email = update_Attendee.Email;
                     attendee.IsActive = update_Attendee.IsActive;
+                    attendee.Role=update_Attendee.Role??4;
 
                     attendeeUser.UserName = update_Attendee.UserName;
                     attendeeUser.HashedPassword = BCrypt.Net.BCrypt.HashPassword(update_Attendee.Password);
@@ -381,6 +382,7 @@ namespace Event_System.Controllers
                                    Gender=attendee.Gender,
                                    UserId=attendee.UserId,
                                    UserName=attendee.UserNavigation.UserName,
+                                   Role=attendee.Role,
                                    
                                    
                                    

@@ -15,12 +15,13 @@
         public long UserId { get; set; }
 
         public bool Gender { get; set; } = false;
+        public long? Role { get; set; }
 
 
 
 
 
-     
+
 
         public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }

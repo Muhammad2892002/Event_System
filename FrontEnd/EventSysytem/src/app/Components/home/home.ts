@@ -6,6 +6,7 @@ import { RequestToJoinEventService } from '../../Services/request-to-join-event-
 import { RequestToBeOrganizerService } from '../../Services/request-to-be-organizer';
 import { FormControl, FormGroup,ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { AddAndUpdateRequest } from '../../Interface/AddRequestAndUpdate';
 
 @Component({
   selector: 'app-home',
@@ -13,10 +14,13 @@ import { DatePipe } from '@angular/common';
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
+
 export class HomeComponent {
   constructor(private requestToJoinEvent:RequestToJoinEventService,
     private requestToBeOrganizer:RequestToBeOrganizerService
   ){}
+
+
    getAllPendingRequestToEvents:FormGroup=new FormGroup({
   eventId:new FormControl<number | null>(null),
   userId:new FormControl<number | null>(null),
@@ -24,6 +28,69 @@ export class HomeComponent {
   requestedAt:new FormControl<string | null>(null),
  
   });
+
+  UpdateRequest:FormGroup=new FormGroup({
+    Id:new FormControl<number|null>(null),
+    EventId:new FormControl<number|null>(null),
+    UserId:new FormControl<number|null>(null),
+    Status:new FormControl<number|null>(null),
+    RequestedAt:new FormControl<number|null>(null),
+
+
+
+  });
+//
+  sendJoinRequestResult(item:any,statusObj:boolean){
+    let result:AddAndUpdateRequest={
+      id:item.id,
+      EventId:item.eventId,
+      UserId:item.userId,
+      status:statusObj?2:1
+      
+
+
+    };
+    this.requestToJoinEvent.EditRequestToJoinEvent(result).subscribe({
+
+      next:(res:any)=>{
+        alert("Request changed");
+      },
+      error:err=>{
+        console.log(err.err||err.error);
+      }
+    })
+
+
+ 
+    console.log(result);
+ 
+  }
+
+
+    sendJoinRequestToBeOrganizerResult(item:showAllOragnizerRequest,statusObj:boolean){
+    let result:showAllOragnizerRequest={
+      id:item.id,
+      statusId:statusObj?2:1
+      
+
+
+    };
+    this.requestToBeOrganizer.UpdateRequest(result).subscribe({
+
+      next:(res:any)=>{
+        alert("Request changed");
+      },
+      error:err=>{
+        console.log(err.err||err.error);
+      }
+    })
+
+
+ 
+    console.log(result);
+ 
+  }
+
   ngOnInit(){
     this.getAllPendingRequestToJoinEvent();
     this.getAllPendingRequestToAnOrganizer();

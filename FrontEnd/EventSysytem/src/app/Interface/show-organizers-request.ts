@@ -1,10 +1,10 @@
 export interface showAllOragnizerRequest{
     id:number;
-    userId:number;
-    attendeeName:string;
+    userId?:number |null;
+    attendeeName?:string|null;
     statusId:number;
-    statusName:string;
-    RequestDate:string;
+    statusName?:string |null;
+    RequestDate?:string |null ;
 
 
 
