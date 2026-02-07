@@ -4,10 +4,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { showAllOragnizerRequest } from '../../Interface/show-organizers-request';
 import { RequestToBeOrganizerService } from '../../Services/request-to-be-organizer';
 import { DatePipe } from '@angular/common';
+import { DeleteConfirmation } from '../delete-confirmation/delete-confirmation';
 
 @Component({
   selector: 'app-request-to-be-organizer',
-  imports: [ReactiveFormsModule,NgxPaginationModule,DatePipe],
+  imports: [ReactiveFormsModule,NgxPaginationModule,DatePipe,DeleteConfirmation],
   templateUrl: './request-to-be-organizer.html',
   styleUrl: './request-to-be-organizer.css',
 })
@@ -69,6 +70,31 @@ export class RequestToBeOrganizer {
       
     })
  
+
+  }
+
+
+      deleteConfirmation :boolean=false;
+  title:string="Request delete confirmation ";
+  content:string="Are you sure you want to delete this request?";
+  RequestToBeOrganizer?:number|null=0;
+
+  deleteRequest(id?:number){
+    this.RequestToBeOrganizer=id;
+    this.deleteConfirmation=true;
+  }
+
+
+
+  
+
+  confirmRequestDelete(confirm:boolean){
+    if(confirm){
+      alert("nice try man hahahahaha");
+    }
+    else{
+      this.deleteConfirmation=false;
+    }
 
   }
 

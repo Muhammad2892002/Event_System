@@ -106,6 +106,7 @@
                                 <i class="bi bi-pencil-square"></i>
                             </button>
                             <button type="button"
+                            (click)="deleteParticipant(item.Id)"
                            
                                 class="btn btn-outline-danger">
                                 <i class="bi bi-trash"></i>
@@ -184,3 +185,16 @@
         </div>
     </div>
 </div>
+@if(deleteConfirmation){
+
+    <app-delete-confirmation
+     [title]="title";
+     [content]="content";
+     (confirm)="confirmAttendeeDelete($event)"
+    
+    >
+
+    </app-delete-confirmation>
+
+   
+}

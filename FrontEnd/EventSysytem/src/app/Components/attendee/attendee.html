@@ -131,6 +131,7 @@
                                 <i class="bi bi-pencil-square"></i>
                             </button>
                             <button type="button"
+                            (click)="showDeleteConfirmation(item.Id)"
                                 class="btn btn-outline-danger">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -260,6 +261,7 @@
             <!-- Modal Footer -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary"
+                data-bs-toggle="modal" data-bs-target="#staticBackdrop"
                     data-bs-dismiss="modal">
                     Close
                 </button>
@@ -272,3 +274,16 @@
         </div>
     </div>
 </div>
+@if(deleteConfirmation){
+
+    <app-delete-confirmation
+     [title]="title";
+     [content]="content";
+     (confirm)="confirmAttendeeDelete($event)"
+    
+    >
+
+    </app-delete-confirmation>
+
+   
+}

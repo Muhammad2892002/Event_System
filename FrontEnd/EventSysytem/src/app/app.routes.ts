@@ -7,6 +7,8 @@ import { AttendeeComponent } from './Components/attendee/attendee';
 import { EventParticipants } from './Components/event-participants/event-participants';
 import { RequestToBeOrganizer } from './Components/request-to-be-organizer/request-to-be-organizer';
 import { RequestsToJoinEvent } from './Components/requests-to-join-event/requests-to-join-event';
+import { Login } from './Components/login/login';
+import { SignUp } from './Components/sign-up/sign-up';
 
 export const routes: Routes = [
     {path:'home',component:HomeComponent},
@@ -15,6 +17,8 @@ export const routes: Routes = [
     {path:'eventParticipants',component:EventParticipants},
     {path:'requestToBeOrganizer',component:RequestToBeOrganizer},
     {path:'requestsToJoinEvent',component:RequestsToJoinEvent},
+    {path:'login',component:Login},
+    {path:'sign-up',component:SignUp},
     {path:'',redirectTo:'home',pathMatch:'full'}
     ,{path:'**',redirectTo:'home',pathMatch:'full'}
 ];

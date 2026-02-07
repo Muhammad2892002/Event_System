@@ -124,6 +124,7 @@
                         <td>
                         
                             <button type="button"
+                            (click)="deleteJoinRequest(item.id)"
                                 class="btn btn-outline-danger">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -143,6 +144,20 @@
     </div>
 
 </div>
+
+@if(deleteConfirmation){
+
+    <app-delete-confirmation
+     [title]="title";
+     [content]="content";
+     (confirm)="confirmJoinRequestDelete($event)"
+    
+    >
+
+    </app-delete-confirmation>
+
+   
+}
 
 <!-- Modal: Create Request -->
 

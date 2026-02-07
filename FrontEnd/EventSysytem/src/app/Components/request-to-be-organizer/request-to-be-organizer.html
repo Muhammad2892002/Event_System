@@ -96,6 +96,7 @@
                         <td>
                           
                             <button type="button"
+                            (click)="deleteRequest(item.id)"
                                 class="btn btn-outline-danger">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -114,3 +115,17 @@
     </div>
 
 </div>
+
+@if(deleteConfirmation){
+
+    <app-delete-confirmation
+     [title]="title";
+     [content]="content";
+     (confirm)="confirmRequestDelete($event)"
+    
+    >
+
+    </app-delete-confirmation>
+
+   
+}

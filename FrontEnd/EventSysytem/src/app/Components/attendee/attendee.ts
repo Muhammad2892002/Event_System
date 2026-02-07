@@ -4,10 +4,11 @@ import { NgClass } from '@angular/common';
 import { AttendeeService } from '../../Services/AttendeeService';
 import { Attendee } from '../../Interface/attendee';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { DeleteConfirmation } from '../delete-confirmation/delete-confirmation';
 
 @Component({
   selector: 'app-attendee',
-  imports: [ReactiveFormsModule, NgClass, NgxPaginationModule],
+  imports: [ReactiveFormsModule, NgClass, NgxPaginationModule,DeleteConfirmation],
   templateUrl: './attendee.html',
   styleUrl: './attendee.css',
 })
@@ -24,6 +25,14 @@ export class AttendeeComponent {
 
   });
   errorFlag:boolean=false;
+
+  deleteConfirmation:boolean=false;
+  showDeleteConfirmation(Id?:number|null){
+    this.AttendeeIdToBeDeleted=Id??null;
+    this.deleteConfirmation=true;
+  }
+  title="Delete Attendee Confirmation";
+  content="Are you sure you want to delete this Attendee?"
 
 
   apiErrors: string[] = [];
@@ -199,6 +208,20 @@ export class AttendeeComponent {
       
     
 
+
+
+  }
+  AttendeeIdToBeDeleted:number |null=null;
+
+  confirmAttendeeDelete(confirm:boolean){
+    if(confirm){
+      console.log("hahahahahaha it is not working right now ");
+      alert("hahahahahaha it is not working right now ");
+    }
+    else{
+      this.deleteConfirmation=false;
+
+    }
 
 
   }

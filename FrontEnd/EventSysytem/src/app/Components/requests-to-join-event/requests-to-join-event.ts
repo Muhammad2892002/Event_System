@@ -8,10 +8,11 @@ import { DatePipe } from '@angular/common';
 import { AttendeeService } from '../../Services/AttendeeService';
 import { EventService } from '../../Services/event-service';
 import { AddAndUpdateRequest } from '../../Interface/AddRequestAndUpdate';
+import { DeleteConfirmation } from '../delete-confirmation/delete-confirmation';
 
 @Component({
   selector: 'app-requests-to-join-event',
-  imports: [ReactiveFormsModule,NgxPaginationModule,DatePipe],
+  imports: [ReactiveFormsModule,NgxPaginationModule,DatePipe,DeleteConfirmation],
   templateUrl: './requests-to-join-event.html',
   styleUrl: './requests-to-join-event.css',
 })
@@ -193,8 +194,31 @@ export class RequestsToJoinEvent {
       console.log('Form is invalid');
     }
   }
+ 
+
+    deleteConfirmation :boolean=false;
+  title:string="Request delete confirmation ";
+  content:string="Are you sure you want to delete this request";
+  RequestToJoinEvent?:number|null=0;
+
+  deleteJoinRequest(id?:number){
+    this.RequestToJoinEvent=id;
+    this.deleteConfirmation=true;
+  }
+
+
+
   
 
+  confirmJoinRequestDelete(confirm:boolean){
+    if(confirm){
+      alert("nice try man hahahahaha");
+    }
+    else{
+      this.deleteConfirmation=false;
+    }
+
+  }
 
 
 

@@ -9,11 +9,12 @@ import { Lookup } from '../../Services/lookup';
 import { EventService } from '../../Services/event-service';
 import { EventObj } from '../../Interface/EventObj';
 import { DatePipe } from '@angular/common';
+import { DeleteConfirmation } from '../delete-confirmation/delete-confirmation';
 
 
 @Component({
   selector: 'app-event',
-  imports: [ReactiveFormsModule, NgClass, NgxPaginationModule, DatePipe],
+  imports: [ReactiveFormsModule, NgClass, NgxPaginationModule, DatePipe,DeleteConfirmation],
 
   templateUrl: './event.html',
   styleUrl: './event.css',
@@ -221,6 +222,30 @@ export class EventComponent {
       },
       error:err=>{}
     })
+  }
+  deleteConfirmation:boolean=false;
+  title="Event delete confirmation";
+  content="Are you sure you wants to delete this event?";
+  eventId?:number|null=0;
+
+  confirmAttendeeDelete(event:boolean){
+
+    if(event){
+      alert("hehehehehe good try ");
+    }
+    else{
+      this.deleteConfirmation=false;
+
+
+    }
+  }
+
+  showDeleteConfirmation(Id?:number){
+    this.deleteConfirmation=true;
+    this.eventId=Id;
+
+
+
   }
 
 }

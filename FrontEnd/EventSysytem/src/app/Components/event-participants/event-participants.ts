@@ -8,10 +8,11 @@ import { DatePipe } from '@angular/common';
 import { AttendeeService } from '../../Services/AttendeeService';
 import { EventService } from '../../Services/event-service';
 import { AddAndUpdateParticipant } from '../../Interface/AddParticipant';
+import { DeleteConfirmation } from '../delete-confirmation/delete-confirmation';
 
 @Component({
   selector: 'app-event-participants',
-  imports: [NgxPaginationModule, ReactiveFormsModule,DatePipe],
+  imports: [NgxPaginationModule, ReactiveFormsModule,DatePipe,DeleteConfirmation],
   templateUrl: './event-participants.html',
   styleUrl: './event-participants.css',
 })
@@ -260,6 +261,28 @@ loadEventsForParticipant(){
 
 
   }
+
+  deleteConfirmation :boolean=false;
+  title:string="Participant delete confirmation ";
+  content:string="Are you sure you want to delete this participant";
+  participantId?:number|null=0;
+
+  deleteParticipant(id?:number){
+    this.participantId=id;
+    this.deleteConfirmation=true;
+  }
+
+
+  confirmAttendeeDelete(confirm:boolean){
+    if(confirm){
+      alert("nice try man hahahahaha");
+    }
+    else{
+      this.deleteConfirmation=false;
+    }
+
+  }
+
 
 
 }
