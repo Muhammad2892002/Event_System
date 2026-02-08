@@ -263,7 +263,7 @@ namespace Event_System.Controllers
         
         }
         //[Authorize(Roles = "Organizer,Admin")]
-        [HttpDelete("DeleteEvent")]
+        [HttpDelete("DeleteEvent/{id}")]
 
         public IActionResult DeleteEvent(long Id) {
             try {

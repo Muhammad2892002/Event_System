@@ -254,7 +254,7 @@ namespace Event_System.Controllers
         
         }
         //[Authorize(Roles = "Organizer,Admin")]
-        [HttpDelete("DeleteParticpants")]
+        [HttpDelete("DeleteRequest/{id}")]
 
         public IActionResult DeleteRequest(int id) {
             try {
@@ -285,7 +285,7 @@ namespace Event_System.Controllers
                 
                 }
 
-                    return Ok("DeletedSuccessfully");
+                    return Ok(new { msg="deleted successfully"});
             } 
             
             catch (Exception ex) {

@@ -178,8 +178,8 @@ namespace Event_System.Controllers
         
         }
         //[Authorize(Roles = "Admin,Attendee")]
-        [HttpDelete("DeleteRequest")]
-        public IActionResult Deleterequest(long Id) {
+        [HttpDelete("DeleteRequest/{id}")]
+        public IActionResult DeleteRequest(long Id) {
             try
             {
                 var OrganizerRequest = _eventContext.OrganizerRequests.FirstOrDefault(obj => obj.Id == Id);

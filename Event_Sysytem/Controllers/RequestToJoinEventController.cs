@@ -261,7 +261,7 @@ namespace Event_System.Controllers
         }
 
         //[Authorize(Roles = "Organizer,Admin,Attendee")]
-        [HttpDelete("DeleteRequest")]
+        [HttpDelete("DeleteRequestEvent/{id}")]
         public IActionResult DeleteRequestEvent(long Id) {
             try {
                 var Request = _context.EventRequests.FirstOrDefault(obj=>obj.Id==Id);
@@ -284,7 +284,7 @@ namespace Event_System.Controllers
                 }
                 _context.EventRequests.Remove(Request);
                 _context.SaveChanges();
-                return Ok("Deleted Successfully");
+                return Ok(new { msg= "Deleted Successfully" });
             
             
             }

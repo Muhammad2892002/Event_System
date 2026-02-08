@@ -212,7 +212,17 @@ export class RequestsToJoinEvent {
 
   confirmJoinRequestDelete(confirm:boolean){
     if(confirm){
-      alert("nice try man hahahahaha");
+     this.requestToJoinEventService.DeleteRequestToJoinEvent(this.RequestToJoinEvent).subscribe({
+        
+      next:(res:any)=>{
+        alert("Deleted successfully");
+
+      },
+      error:err=>{
+        alert("Cant be delete it")
+      }
+
+     });
     }
     else{
       this.deleteConfirmation=false;

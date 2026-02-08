@@ -267,10 +267,11 @@ namespace Event_System.Controllers
 
         }
         //[Authorize(Roles = "Admin")]
-        [HttpDelete("Delete")]
-        public IActionResult Delete(long id)
+        [HttpDelete("Delete/{id}")]
+        public IActionResult Delete(long? id)
         {
             try
+
             {
                 string massage = string.Empty;
                 var attende = _eventContext.Attendees.FirstOrDefault(attendee => attendee.Id == id);
@@ -284,7 +285,7 @@ namespace Event_System.Controllers
                         if (CheckEventOrganize)
                         {
 
-                            return BadRequest("This organizer cannot be deleted. Please remove all attendees from all events organized by this user first.");
+                            return BadRequest( new {msg= "This organizer cannot be deleted. Please remove all attendees from all events organized by this user first." });
                         }
                         massage = "Deleted Organizer successfully";
 

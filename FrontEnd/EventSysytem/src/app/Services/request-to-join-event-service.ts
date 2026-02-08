@@ -42,6 +42,15 @@ export class RequestToJoinEventService {
   }
 
 
+    
+      DeleteRequestToJoinEvent(id?:number|null){
+
+    return this._http.delete(this.apiurl+`/DeleteRequestEvent/${id}`);
+  
+  
+}
+
+
   
   
 }

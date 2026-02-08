@@ -232,6 +232,17 @@ export class EventComponent {
 
     if(event){
       alert("hehehehehe good try ");
+      this._eventService.DeleteEvent(this.eventId).subscribe({
+
+        next:(res:any)=>{
+          alert("Deleted successfully");
+
+        },
+        error:err=>{
+          alert("cant be deleted");
+
+        }
+      });
     }
     else{
       this.deleteConfirmation=false;

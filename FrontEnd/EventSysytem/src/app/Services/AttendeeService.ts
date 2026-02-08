@@ -46,4 +46,8 @@ return this._http.get(this.apiUrl+'/GetByCriteria');
     EditAtendee(Attendee:Attendee){
     return this._http.put(this.apiUrl+"/Update",Attendee);
   }
+  DeleteAttendee(id?:number|null){
+
+    return this._http.delete(this.apiUrl+`/Delete/${id}`);
+  }
 }

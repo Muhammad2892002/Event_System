@@ -28,5 +28,14 @@ export class RequestToBeOrganizerService {
     return this._http.put(this.apiUrl+"/UpdateRequest",request);
   }
 
+
+  
+      DeleteRequestToBeAnOrgainizer(id?:number |null){
+
+    return this._http.delete(this.apiUrl+`/DeleteRequest/${id}`);
+  
+  
+}
+
   
 }

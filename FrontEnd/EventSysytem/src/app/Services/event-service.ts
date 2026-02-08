@@ -39,5 +39,10 @@ export class EventService {
   UpdateEvent(event:EventObj){
     return this._http.put(this.apiUrl+"/UpdateEvent",event);
   }
+
+    DeleteEvent(id?:number|null){
+
+    return this._http.delete(this.apiUrl+`/DeleteEvent/${id}`);
+  }
   
 }

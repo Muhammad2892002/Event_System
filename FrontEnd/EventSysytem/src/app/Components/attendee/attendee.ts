@@ -215,8 +215,22 @@ export class AttendeeComponent {
 
   confirmAttendeeDelete(confirm:boolean){
     if(confirm){
-      console.log("hahahahahaha it is not working right now ");
-      alert("hahahahahaha it is not working right now ");
+      this._attendeeService.DeleteAttendee(this.AttendeeIdToBeDeleted).subscribe({
+
+
+        next:(res:any)=>{
+          alert("Deleted successfully");
+        },
+        error:err=>{
+          console.log(err);
+          
+
+          alert(err.error.msg);
+        }
+
+       
+      });
+    
     }
     else{
       this.deleteConfirmation=false;

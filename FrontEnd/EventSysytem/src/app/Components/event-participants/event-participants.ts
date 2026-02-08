@@ -275,7 +275,16 @@ loadEventsForParticipant(){
 
   confirmAttendeeDelete(confirm:boolean){
     if(confirm){
-      alert("nice try man hahahahaha");
+      this.eventParticipantsService.DeleteParticipant(this.participantId).subscribe({
+        next:(res:any)=>{
+          alert("Request deleted successfully");
+        },
+        error:err=>{
+          alert("Sorry request cant be deleted");
+        }
+      });
+
+     
     }
     else{
       this.deleteConfirmation=false;

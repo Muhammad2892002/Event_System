@@ -50,5 +50,11 @@ export class EventParticipantsService {
 
 
   }
+
+      DeleteParticipant(id?:number|null){
+
+    return this._http.delete(this.apiUrl+`/DeleteRequest/${id}`);
   
+  
+}
 }

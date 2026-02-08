@@ -90,7 +90,21 @@ export class RequestToBeOrganizer {
 
   confirmRequestDelete(confirm:boolean){
     if(confirm){
-      alert("nice try man hahahahaha");
+      this.organizerService.DeleteRequestToBeAnOrgainizer(this.RequestToBeOrganizer).subscribe({
+
+        next:(res:any)=>{
+          alert("Request Deleted Successfully")
+        },
+        error:err=>{
+          alert("You cant delete this organizer")
+
+        }
+      })
+        
+
+
+      
+     
     }
     else{
       this.deleteConfirmation=false;
