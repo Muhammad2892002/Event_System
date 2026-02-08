@@ -7,6 +7,8 @@ import { RequestToBeOrganizerService } from '../../Services/request-to-be-organi
 import { FormControl, FormGroup,ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { AddAndUpdateRequest } from '../../Interface/AddRequestAndUpdate';
+import { EventService } from '../../Services/event-service';
+import { EventObj } from '../../Interface/EventObj';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +19,8 @@ import { AddAndUpdateRequest } from '../../Interface/AddRequestAndUpdate';
 
 export class HomeComponent {
   constructor(private requestToJoinEvent:RequestToJoinEventService,
-    private requestToBeOrganizer:RequestToBeOrganizerService
+    private requestToBeOrganizer:RequestToBeOrganizerService,
+    private eventService :EventService
   ){}
 
 
@@ -94,6 +97,7 @@ export class HomeComponent {
   ngOnInit(){
     this.getAllPendingRequestToJoinEvent();
     this.getAllPendingRequestToAnOrganizer();
+    this.getAllEvents();
 
   }
      getAllPendingRequestsToBeAnOrganizer:FormGroup=new FormGroup({
@@ -181,6 +185,35 @@ export class HomeComponent {
     })
 
 
+  }
+
+  AllEvents : EventObj[]=[];
+
+  getAllEvents(){
+    this.eventService.getAllEvents(null).subscribe({
+      next:(res:any)=>{
+        
+        res.forEach((x:any)=>{
+         let eventobj:EventObj={
+          Id:x.id,
+          Title:x.title,
+          Description:x.description,
+          Location:x.location,
+          EventDate:x.eventDate,
+          OrganizerId:x.organizerId,
+          maxParticipants:x.maxParticipants,
+          OrganizerName:x.organizerName,
+          LocationName:x.locationName
+
+         }
+         this.AllEvents.push(eventobj);
+          
+
+        })
+
+      },
+      error:err=>{}
+    })
   }
 
 }

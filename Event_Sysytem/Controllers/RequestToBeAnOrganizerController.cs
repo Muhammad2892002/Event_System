@@ -196,7 +196,7 @@ namespace Event_System.Controllers
 
                     }
                     else {
-                        return BadRequest("You cant Delete Accepted or Pending Request");
+                        return BadRequest(new { msg= "You cant Delete Accepted or Pending Request" });
                     
                     
                     

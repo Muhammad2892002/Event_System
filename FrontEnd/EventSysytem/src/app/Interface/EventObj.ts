@@ -1,4 +1,5 @@
 export interface EventObj{
+  
     Title:string |null;
     Description:string |null;
     LocationName?:string | null;

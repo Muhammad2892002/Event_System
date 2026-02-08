@@ -20,5 +20,188 @@
     display: flex;
     justify-content: space-evenly;
 }
+.header{
+        display: flex;
+    justify-content: space-between;
+}
+.info{
+
+        display: flex;
+    justify-content: space-between;
+}
+
+.custom-card {
+  background-color: #fefefe; /* soft white */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+.custom-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Buttons softer */
+.btn-soft {
+  background-color: rgba(0, 123, 255, 0.1); /* soft blue for success */
+  border: none;
+  color: #007bff;
+  transition: background-color 0.2s ease;
+}
+
+.btn-success.btn-soft:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-danger.btn-soft {
+  background-color: rgba(220, 53, 69, 0.1); /* soft red */
+  color: #dc3545;
+}
+
+.btn-danger.btn-soft:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Text comfort */
+.header h6 {
+  margin: 0;
+}
+
+.info small {
+  font-size: 0.85rem;
+}
 
 
+/* Grid layout for multiple cards */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Card styling */
+.custom-card {
+  background: #fcfcfc; /* soft white */
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.custom-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* Buttons softer */
+.btn-soft {
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-success.btn-soft {
+  background-color: rgba(40, 167, 69, 0.15);
+  color: #28a745;
+}
+
+.btn-success.btn-soft:hover {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-danger.btn-soft {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+}
+
+.btn-danger.btn-soft:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Badges */
+.badge {
+  font-size: 0.8rem;
+  padding: 0.35em 0.65em;
+  border-radius: 8px;
+}
+
+/* Text comfort */
+.header h6 {
+  margin: 0;
+}
+
+.info span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Main layout */
+.main-div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* Soft card styling */
+.custom-home-card {
+  background: #fcfcfc;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.custom-home-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* Alerts soft style */
+.alert-soft-warning {
+  background-color: rgba(255, 193, 7, 0.1);
+  border: none;
+  border-radius: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.alert-soft-warning:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Buttons soft style */
+.btn-soft {
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-success.btn-soft {
+  background-color: rgba(40, 167, 69, 0.15);
+  color: #28a745;
+}
+
+.btn-success.btn-soft:hover {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-danger.btn-soft {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+}
+
+.btn-danger.btn-soft:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Badge styling */
+.badge {
+  font-size: 0.85rem;
+  border-radius: 8px;
+  padding: 0.35em 0.65em;
+}
