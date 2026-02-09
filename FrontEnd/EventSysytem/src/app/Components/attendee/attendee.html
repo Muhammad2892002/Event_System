@@ -1,289 +1,564 @@
-<div class="container-fluid px-3">
 
-    <!-- Filter Card -->
-    <div class="card custom-card">
-        <div class="card-header">
-            <h4 class="mb-0">
-                <i class="bi bi-funnel"></i>
-                Filter Attendees
-            </h4>
-        </div>
+<section class="table">
+    <div class="container-fluid px-3">
 
-        <div class="card-body">
-            <div class="row g-3"> <!-- added gap -->
-                <form [formGroup]="searchForm" class="row g-3">
-
-                    <div class="col-md-4 col-sm-6">
-                        <label class="form-label">First Name</label>
-                        <input type="text" class="form-control"
-                            formControlName="FirstName">
-                    </div>
-
-                    <div class="col-md-4 col-sm-6">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" class="form-control"
-                            formControlName="LastName">
-                    </div>
-
-                    <div class="col-md-4 col-sm-6">
-                        <label class="form-label">Role</label>
-                        <select class="form-select" formControlName="RoleId">
-                            <option [ngValue]="null">Choose Role</option>
-                            <option [ngValue]="4">Attendee</option>
-                            <option [ngValue]="3">Organizer</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6">
-                        <label class="form-label">Gender</label>
-                        <select class="form-select" formControlName="GenderId">
-                            <option [ngValue]="null">Choose Gender</option>
-                            <option [ngValue]="true">Male</option>
-                            <option [ngValue]="false">Female</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6">
-                        <label class="form-label">Is Activated</label>
-                        <select class="form-select"
-                            formControlName="ISActivated">
-                            <option [ngValue]="null">Choose Status</option>
-                            <option [ngValue]="true">Active</option>
-                            <option [ngValue]="false">Inactive</option>
-                        </select>
-                    </div>
-
-                </form>
-
+        <!-- Filter Card -->
+        <div class="card custom-card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="bi bi-funnel"></i>
+                    Filter Attendees
+                </h4>
             </div>
 
-            <!-- Button aligned to the right -->
-            <div class="mt-3 d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-secondary"
-                    (click)="click()"
-                    value="Search">
-                    <i class="bi bi-search"></i> Search
+            <div class="card-body">
+                <div class="row g-3"> <!-- added gap -->
+                    <form [formGroup]="searchForm" class="row g-3">
 
-                </button>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Table Card -->
-    <div class="card custom-card">
-        <div class="card-header">
-            <h4 class="mb-0">
-                <i class="bi bi-person"></i>
-                All Attendees
-            </h4>
-
-            <button type="button" data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
-                (click)="ClearForm()"
-                class="btn btn-outline-secondary mt-2 mt-md-0">
-                <i class="bi bi-person-add"></i>
-                Add Employee
-            </button>
-        </div>
-
-        <div class="card-body table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">FirstName</th>
-                        <th scope="col">LastName</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">UserName</th>
-
-                        <th scope="col">Gender</th>
-                        <th scope="col">Role</th>
-                        <th scope="col">IsActive</th>
-                        <th scope="col">Actions</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (item of attendees |paginate:paginationConfig; track
-                    item.Id; let i = $index) {
-                    <tr>
-                        <td>{{$index+1}}</td>
-                        <td>{{item.firstName}}</td>
-                        <td>{{item.lastName}}</td>
-                        <td>{{item.email}}</td>
-                        <td>{{item.userName}}</td>
-                        <td>{{item.genderName}}</td>
-                        <td>{{item.RoleName}}</td>
-                        <td>@if(item.isActive){
-                            <span class="badge text-bg-success">Active</span>
-                            }
-                            @else{
-                            <span class="badge text-bg-danger">Not Active</span>
-
-                            }</td>
-                        <td>
-                            <button type="button"
-                                class="btn btn-outline-success me-2"
-                                data-bs-target="#exampleModal"
-                                (click)="loadAttendeeForm(item.Id)"
-                                data-bs-toggle="modal">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                            <button type="button"
-                            (click)="showDeleteConfirmation(item.Id)"
-                                class="btn btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
-
-                        </td>
-
-                    </tr>
-                    }
-
-                </tbody>
-
-            </table>
-            <pagination-controls
-                (pageChange)="changePage($event)"></pagination-controls>
-        </div>
-
-    </div>
-
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1"
-    aria-labelledby="exampleModalLabel" aria-hidden="true">
-
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                    <i class="bi bi-person-plus me-2"></i>
-                    Add / Update User
-                </h5>
-                <button type="button" class="btn-close"
-                    data-bs-dismiss="modal"></button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="modal-body">
-                <form [formGroup]="AttendeeForm">
-                    @if(errorFlag){
-
-                    <div class="alert alert-danger" role="alert">
-                        @for(err of apiErrors;track err){
-                        <span>err</span>
-
-                        }
-
-                    </div>
-                    }
-
-                    <!-- Credentials -->
-                    <h6 class="text-muted mb-2">Account Credentials</h6>
-
-                    <div class="row g-3 mb-3">
-                        <!-- Username -->
-                        <div class="col-md-4">
-                            <label class="form-label">Username</label>
-                            <input type="text" class="form-control"
-                                formControlName="userName">
-                        </div>
-
-                        <!-- Password with eye toggle -->
-                        <div class="col-md-4">
-                            <label class="form-label">Password</label>
-                            <div class="input-group">
-                                <input
-                                    class="form-control"
-                                    formControlName="password">
-                                <button class="btn btn-outline-secondary"
-                                    type="button">
-                                    <i class="bi"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <!-- Personal Info -->
-                    <h6 class="text-muted mt-3 mb-2">Personal Information</h6>
-
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control"
-                                formControlName="email">
-                        </div>
-
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-sm-6">
                             <label class="form-label">First Name</label>
                             <input type="text" class="form-control"
-                                formControlName="firstName">
+                                formControlName="FirstName">
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-sm-6">
                             <label class="form-label">Last Name</label>
                             <input type="text" class="form-control"
-                                formControlName="lastName">
+                                formControlName="LastName">
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-sm-6">
+                            <label class="form-label">Role</label>
+                            <select class="form-select"
+                                formControlName="RoleId">
+                                <option [ngValue]="null">Choose Role</option>
+                                <option [ngValue]="4">Attendee</option>
+                                <option [ngValue]="3">Organizer</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 col-sm-6">
                             <label class="form-label">Gender</label>
                             <select class="form-select"
-                                formControlName="gender">
-                                <option value>Select gender</option>
+                                formControlName="GenderId">
+                                <option [ngValue]="null">Choose Gender</option>
                                 <option [ngValue]="true">Male</option>
                                 <option [ngValue]="false">Female</option>
                             </select>
                         </div>
 
-
-                         <div class="col-md-4">
-                            <label class="form-label">Role</label>
+                        <div class="col-md-4 col-sm-6">
+                            <label class="form-label">Is Activated</label>
                             <select class="form-select"
-                                formControlName="roleId">
-                                <option value>Select Role</option>
-                                <option [ngValue]="3">Organizer</option>
-                                <option [ngValue]="4">Attendee</option>
+                                formControlName="ISActivated">
+                                <option [ngValue]="null">Choose Status</option>
+                                <option [ngValue]="true">Active</option>
+                                <option [ngValue]="false">Inactive</option>
                             </select>
                         </div>
-                    </div>
 
-                </form>
+                    </form>
+
+                </div>
+
+                <!-- Button aligned to the right -->
+                <div class="mt-3 d-flex justify-content-end">
+                    <button type="button" class="btn btn-outline-secondary"
+                        (click)="click()"
+                        value="Search">
+                        <i class="bi bi-search"></i> Search
+
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="card custom-card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="bi bi-person"></i>
+                    All Attendees
+                </h4>
+
+                <button type="button" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    (click)="ClearForm()"
+                    class="btn btn-outline-secondary mt-2 mt-md-0">
+                    <i class="bi bi-person-add"></i>
+                    Add Employee
+                </button>
             </div>
 
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary"
-                data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                    data-bs-dismiss="modal">
-                    Close
-                </button>
-                <button type="button" class="btn btn-primary"
-                    (click)="AddNewAttendee()">
-                    Save
-                </button>
+            <div class="card-body table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">FirstName</th>
+                            <th scope="col">LastName</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">UserName</th>
+
+                            <th scope="col">Gender</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">IsActive</th>
+                            <th scope="col">Actions</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (item of attendees |paginate:paginationConfig;
+                        track
+                        item.Id; let i = $index) {
+                        <tr>
+                            <td>{{$index+1}}</td>
+                            <td>{{item.firstName}}</td>
+                            <td>{{item.lastName}}</td>
+                            <td>{{item.email}}</td>
+                            <td>{{item.userName}}</td>
+                            <td>{{item.genderName}}</td>
+                            <td>{{item.RoleName}}</td>
+                            <td>@if(item.isActive){
+                                <span
+                                    class="badge text-bg-success">Active</span>
+                                }
+                                @else{
+                                <span class="badge text-bg-danger">Not
+                                    Active</span>
+
+                                }</td>
+                            <td>
+                                <button type="button"
+                                    class="btn btn-outline-success me-2"
+                                    data-bs-target="#EditModal"
+                                    (click)="loadAttendeeForm(item.Id)"
+                                    data-bs-toggle="modal">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <button type="button"
+                                    (click)="showDeleteConfirmation(item.Id)"
+                                    class="btn btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+
+                            </td>
+
+                        </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+                <pagination-controls
+                    (pageChange)="changePage($event)"></pagination-controls>
             </div>
 
         </div>
+
     </div>
-</div>
-@if(deleteConfirmation){
+</section>
+
+
+<section class="ModalAdd">
+    <div class="modal fade" id="exampleModal" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        <i class="bi bi-person-plus me-2"></i>
+                        Add
+                    </h5>
+                    <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form [formGroup]="AttendeeAddForm">
+                        @if(errorFlag){
+
+                        <div class="alert alert-danger" role="alert">
+                            @for(err of apiErrors;track err){
+                            <span>err</span>
+
+                            }
+
+                        </div>
+                        }
+
+                        <!-- Credentials -->
+                        <h6 class="text-muted mb-2">Account Credentials</h6>
+
+                        <div class="row g-3 mb-3">
+                            <!-- Username -->
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+                                    Username</label>
+                                <input type="text" class="form-control"
+                                [class.errorBorder]="AttendeeAddForm.get('userName')?.invalid && AttendeeAddForm.get('userName')?.touched"
+                                    formControlName="userName">
+                                    @if(AttendeeAddForm.get('userName')?.invalid && AttendeeAddForm.get('userName')?.touched){
+                                        <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                    }
+                            </div>
+
+                            <!-- Password with eye toggle -->
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+                                   
+                                    <i class="text-danger">*</i>
+                                    Password</label>
+                                <div class="input-group">
+                                    <input
+                                        class="form-control"
+                                        [class.errorBorder]="AttendeeAddForm.get('password')?.invalid && AttendeeAddForm.get('password')?.touched"
+                                        
+                                        formControlName="password">
+                                  
+                                   
+                                </div>
+
+                                 @if(AttendeeAddForm.get('password')?.invalid && AttendeeAddForm.get('password')?.touched){
+                                          <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                    }
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Personal Info -->
+                        <h6 class="text-muted mt-3 mb-2">Personal
+                            Information</h6>
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+                                    Email</label>
+                                <input type="email" class="form-control"
+                                [class.errorBorder]="AttendeeAddForm.get('email')?.invalid && AttendeeAddForm.get('email')?.touched"
+                                    formControlName="email">
+
+                                    @if(AttendeeAddForm.get('email')?.invalid && AttendeeAddForm.get('email')?.touched){
+                                          <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                    }
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+
+                                    First Name</label>
+                                <input type="text" class="form-control"
+                                [class.errorBorder]="AttendeeAddForm.get('firstName')?.invalid && AttendeeAddForm.get('firstName')?.touched"
+                                    formControlName="firstName">
+
+                                    @if(AttendeeAddForm.get('firstName')?.invalid && AttendeeAddForm.get('firstName')?.touched){
+                                           <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                    }
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+                                    Last Name</label>
+                                <input type="text" class="form-control"
+                                [class.errorBorder]="AttendeeAddForm.get('lastName')?.invalid && AttendeeAddForm.get('lastName')?.touched"
+                                    formControlName="lastName">
+                                    @if(AttendeeAddForm.get('lastName')?.invalid && AttendeeAddForm.get('lastName')?.touched){
+                                          <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                        
+
+                                    }
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+
+                                    Gender</label>
+                                <select class="form-select"
+                                [class.errorBorder]="AttendeeAddForm.get('gender')?.invalid && AttendeeAddForm.get('gender')?.touched"
+                                    formControlName="gender">
+                                    <option value>Select gender</option>
+                                    <option [ngValue]="true">Male</option>
+                                    <option [ngValue]="false">Female</option>
+                                </select>
+                                @if(AttendeeAddForm.get('gender')?.invalid && AttendeeAddForm.get('gender')?.touched){
+                                       <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                }
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+
+                                    Role</label>
+                                <select class="form-select"
+                                
+                                
+                                    formControlName="roleId">
+                                    <option value>Select Role</option>
+                                    <option [ngValue]="3">Organizer</option>
+                                    <option [ngValue]="4">Attendee</option>
+                                </select>
+                              
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary"
+                        data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                        #closeAddModal
+                        data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary" 
+                    [disabled]="!AttendeeAddForm.valid"
+                        (click)="AddNewAttendee()">
+                        Save
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ModalEdit">
+    <div class="modal fade" id="EditModal" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        <i class="bi bi-person-plus me-2"></i>
+                        Update User
+                    </h5>
+                    <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form [formGroup]="AttendeeEditForm">
+                        @if(errorFlag){
+
+                        <div class="alert alert-danger" role="alert">
+                            @for(err of apiErrors;track err){
+                            <span>err</span>
+
+                            }
+
+                        </div>
+                        }
+
+                        <!-- Credentials -->
+                        <h6 class="text-muted mb-2">Account Credentials</h6>
+
+                        <div class="row g-3 mb-3">
+                            <!-- Username -->
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+                                    Username</label>
+                                <input type="text" class="form-control"
+                                [class.errorBorder]="AttendeeEditForm.get('userName')?.invalid && AttendeeEditForm.get('userName')?.touched"
+                                    formControlName="userName">
+                                    @if(AttendeeEditForm.get('userName')?.invalid && AttendeeEditForm.get('userName')?.touched){
+                                        <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                    }
+                            </div>
+
+                            <!-- Password with eye toggle -->
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+                                   
+                                    
+                                    Password</label>
+                                <div class="input-group">
+                                    <input
+                                        class="form-control"
+                                      
+                                        
+                                        formControlName="password">
+                                  
+                                   
+                                </div>
+
+                                 @if(AttendeeEditForm.get('password')?.invalid && AttendeeEditForm.get('password')?.touched){
+                                          <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                    }
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Personal Info -->
+                        <h6 class="text-muted mt-3 mb-2">Personal
+                            Information</h6>
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+                                    Email</label>
+                                <input type="email" class="form-control"
+                                [class.errorBorder]="AttendeeEditForm.get('email')?.invalid && AttendeeEditForm.get('email')?.touched"
+                                    formControlName="email">
+
+                                    @if(AttendeeEditForm.get('email')?.invalid && AttendeeEditForm.get('email')?.touched){
+                                          <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                    }
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+
+                                    First Name</label>
+                                <input type="text" class="form-control"
+                                [class.errorBorder]="AttendeeEditForm.get('firstName')?.invalid && AttendeeEditForm.get('firstName')?.touched"
+                                    formControlName="firstName">
+
+                                    @if(AttendeeEditForm.get('firstName')?.invalid && AttendeeEditForm.get('firstName')?.touched){
+                                           <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                    }
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+                                    Last Name</label>
+                                <input type="text" class="form-control"
+                                [class.errorBorder]="AttendeeEditForm.get('lastName')?.invalid && AttendeeEditForm.get('lastName')?.touched"
+                                    formControlName="lastName">
+                                    @if(AttendeeEditForm.get('lastName')?.invalid && AttendeeEditForm.get('lastName')?.touched){
+                                          <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                        
+
+                                    }
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="text-danger">*</i>
+
+                                    Gender</label>
+                                <select class="form-select"
+                                [class.errorBorder]="AttendeeEditForm.get('gender')?.invalid && AttendeeEditForm.get('gender')?.touched"
+                                    formControlName="gender">
+                                    <option value>Select gender</option>
+                                    <option [ngValue]="true">Male</option>
+                                    <option [ngValue]="false">Female</option>
+                                </select>
+                                @if(AttendeeEditForm.get('gender')?.invalid && AttendeeEditForm.get('gender')?.touched){
+                                       <label class="text-danger">
+                                          *This Field is Required
+                                        </label>
+                                }
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                 
+
+                                    Role</label>
+                                <select class="form-select"
+                                
+                                
+                                    formControlName="roleId">
+                                    <option value>Select Role</option>
+                                    <option [ngValue]="3">Organizer</option>
+                                    <option [ngValue]="4">Attendee</option>
+                                </select>
+                              
+                            </div>
+
+                                <div class="col-md-4 form-check form-switch">
+                                <label class="form-label">
+                                 
+
+                                    Status</label>
+                                 <input class="form-check-input" type="checkbox" role="switch" id="switchCheckChecked" formControlName="isActive" >
+                              
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary"
+                        data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                        #closeEditModal
+                        data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary" 
+                    [disabled]="!AttendeeEditForm.valid"
+                        (click)="AddNewAttendee()">
+                        Save
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="DeleteConfirmation">
+
+    @if(deleteConfirmation){
 
     <app-delete-confirmation
-     [title]="title";
-     [content]="content";
-     (confirm)="confirmAttendeeDelete($event)"
-    
-    >
+        [title]="title" ;
+        [content]="content" ;
+        (confirm)="confirmAttendeeDelete($event)">
 
     </app-delete-confirmation>
 
-   
-}
+    }
+
+</section>

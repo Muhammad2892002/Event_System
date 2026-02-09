@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { AttendeeService } from '../../Services/AttendeeService';
 import { Attendee } from '../../Interface/attendee';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { DeleteConfirmation } from '../delete-confirmation/delete-confirmation';
+
 
 @Component({
   selector: 'app-attendee',
@@ -25,6 +26,8 @@ export class AttendeeComponent {
 
   });
   errorFlag:boolean=false;
+  @ViewChild('closeAddModal') closeAddModal!:ElementRef;
+  @ViewChild('closeEditModal')closeEditModal!:ElementRef;
 
   deleteConfirmation:boolean=false;
   showDeleteConfirmation(Id?:number|null){
@@ -37,7 +40,7 @@ export class AttendeeComponent {
 
   apiErrors: string[] = [];
 
-  AttendeeForm:FormGroup=new FormGroup({
+  AttendeeAddForm:FormGroup=new FormGroup({
     userName: new FormControl<string>("",Validators.required),
     password:new FormControl<string>("",Validators.required),
     id:new FormControl<number|null>(null),
@@ -52,6 +55,28 @@ export class AttendeeComponent {
    
 
   });
+
+
+    AttendeeEditForm:FormGroup=new FormGroup({
+    userName: new FormControl<string>("",Validators.required),
+    password:new FormControl<string|null>(null),
+    id:new FormControl<number|null>(null),
+      firstName:new FormControl<string>("",Validators.required),
+      lastName:new FormControl<string>("",Validators.required),
+        email:new FormControl<string>("",Validators.required),
+         userId:new FormControl<number|null>(null),
+         gender:new FormControl<boolean>(false,Validators.required),
+           roleId:new FormControl<number|null>(null),
+            isActive:new FormControl<boolean>(false),
+
+      
+   
+
+  });
+
+
+
+
 
 
   paginationConfig={
@@ -121,46 +146,78 @@ export class AttendeeComponent {
 
   }
   AddNewAttendee(){
-       let attendee :Attendee={
-      userName:this.AttendeeForm.value.userName,
-      password:this.AttendeeForm.value.password,
-      Id:this.AttendeeForm.value.id??null,
+
+    
+
+    if(this.AttendeeEditForm.value.id==null){
+             let addAttendee :Attendee={
+      userName:this.AttendeeAddForm.value.userName,
+      password:this.AttendeeAddForm.value.password,
+      Id:this.AttendeeAddForm.value.id??null,
       userId:0,
-      firstName:this.AttendeeForm.value.firstName,
-      lastName:this.AttendeeForm.value.lastName,
-      email:this.AttendeeForm.value.email,
-      gender:this.AttendeeForm.value.gender,
-      Role:this.AttendeeForm.value.roleId
+      firstName:this.AttendeeAddForm.value.firstName,
+      lastName:this.AttendeeAddForm.value.lastName,
+      email:this.AttendeeAddForm.value.email,
+      gender:this.AttendeeAddForm.value.gender,
+      Role:this.AttendeeAddForm.value.roleId
       
 
     };
-
-    if(attendee.Id==null){
-        console.log(this.AttendeeForm.valid);
+       
  
-    this._attendeeService.AddAtendee(attendee).subscribe({
+    this._attendeeService.AddAtendee(addAttendee).subscribe({
 
       next:(res:any)=>{
         console.log("Successfully added");
-        this.AttendeeForm.reset();
+        this.AttendeeAddForm.reset();
+        this.closeAddModal?.nativeElement.click();
+        this.click();
       },
-      error:err=>{
-                console.log('FULL ERROR:', err);
-      console.log('API Validation Errors:', err.error?.errors);
+      error:(err)=>{
+        let errorr:any[]=err.error?.errors??[];
+        console.log(err.error);
+        console.error("error");
+       
+        alert(err.error.fullName+"\n"+err.error.userName+"\n"+err.error.email);
+      
+       
+        
+
+      
+        
+      
+      
+   
    
       }
     });
 
     }
     else{
-      this._attendeeService.EditAtendee(attendee).subscribe({
+             let editAttendee :Attendee={
+      userName:this.AttendeeEditForm.value.userName,
+      password:this.AttendeeEditForm.value.password,
+      Id:this.AttendeeEditForm.value.id,
+      userId:0,
+      firstName:this.AttendeeEditForm.value.firstName,
+      lastName:this.AttendeeEditForm.value.lastName,
+      email:this.AttendeeEditForm.value.email,
+      gender:this.AttendeeEditForm.value.gender,
+      Role:this.AttendeeEditForm.value.roleId,
+      isActive:this.AttendeeEditForm.value.isActive
+      
+
+    };
+      this._attendeeService.EditAtendee(editAttendee).subscribe({
           next:(res:any)=>{
         console.log("Successfully updated");
-        this.AttendeeForm.reset();
+        this.AttendeeEditForm.reset();
+        this.click();
+        this.closeEditModal.nativeElement.click();
       },
       error:err=>{
            console.log('FULL ERROR:', err);
-      console.log('API Validation Errors:', err.error?.errors);
+      console.log('API Validation Errors:', err.error);
 
 
       }
@@ -173,7 +230,8 @@ export class AttendeeComponent {
    
   }
   ClearForm(){
-    this.AttendeeForm.reset();
+    this.AttendeeEditForm.reset();
+    this.AttendeeAddForm.reset();
   }
 
   loadAttendeeForm(id?:number|null){
@@ -182,7 +240,7 @@ export class AttendeeComponent {
      }
       this._attendeeService.getAttendeeById(id).subscribe({
         next:(res:any)=>{
-          this.AttendeeForm.patchValue({
+          this.AttendeeEditForm.patchValue({
             userName:res.userName,
             id:res.id,
             firstName:res.firstName,
@@ -191,7 +249,8 @@ export class AttendeeComponent {
             userId:res.userId,
             gender:res.gender,
             roleId:res.role,
-            password:null
+            password:null,
+            isActive:res.isActive
 
             
           });

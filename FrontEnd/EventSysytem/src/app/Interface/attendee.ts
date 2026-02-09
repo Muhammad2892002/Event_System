@@ -13,6 +13,7 @@ export interface Attendee {
     isActive?:boolean|null;
     password?:string|null;
     
+    
 
 
 }

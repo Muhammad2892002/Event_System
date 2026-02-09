@@ -1,6 +1,7 @@
 ﻿using Event_System.DbContexts;
 using Event_System.Dtos;
 using Event_System.Dtos.AttendeeDto;
+using Event_System.Dtos.AttendeeDto.MassageErrorDto;
 using Event_System.Dtos.EventDto;
 using Event_System.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -35,9 +36,9 @@ namespace Event_System.Controllers
                                    where
                               (
 
-                                 (searchAttendee.AteendeeFirstName == null || attendee.FirstName.ToUpper().Contains(searchAttendee.AteendeeFirstName.ToUpper()))
+                                 (searchAttendee.AteendeeFirstName == null || attendee.FirstName.ToUpper().Trim().Contains(searchAttendee.AteendeeFirstName.ToUpper().Trim()))
                                  &&
-                                  (searchAttendee.AteendeeLastName == null || attendee.LastName.ToUpper().Contains(searchAttendee.AteendeeLastName.ToUpper()))
+                                  (searchAttendee.AteendeeLastName == null || attendee.LastName.ToUpper().Trim().Contains(searchAttendee.AteendeeLastName.ToUpper().Trim()))
                                   &&
 
                                 (searchAttendee.IsActivated == attendee.IsActive || searchAttendee.IsActivated == null)
@@ -106,14 +107,14 @@ namespace Event_System.Controllers
 
         public IActionResult Create([FromBody] CreateAteendeeDto createNewAttendee)
         {
-            List<string>errorMassage= new List<string>();
+            ErrorMassageDto msg= new ErrorMassageDto();
             User user=new User();
             try
             {
                 bool IsUserNameExist = _eventContext.Users.Any(x => x.UserName == createNewAttendee.UserName);
                 if (IsUserNameExist)
                 {
-                    errorMassage.Add("*The user name is Exist"); 
+                    msg.UserName="*The user name is Exist"; 
 
 
 
@@ -123,8 +124,8 @@ namespace Event_System.Controllers
                 bool doesNameExist = _eventContext.Attendees.Any(x => x.FirstName == createNewAttendee.FirstName && x.LastName == createNewAttendee.LastName);
                 if (doesNameExist)
                 {
-                  
-                    errorMassage.Add( "*The Name you entered exist");
+
+                    msg.FullName = "*The Name you entered exist";
 
 
                 }
@@ -132,7 +133,7 @@ namespace Event_System.Controllers
                 {
 
                    
-                    errorMassage.Add("*The Email you entered is exist");
+                    msg.Email="*The Email you entered is exist";
                 }
 
 
@@ -140,7 +141,7 @@ namespace Event_System.Controllers
 
 
 
-                if (errorMassage.Count==0)
+                if (msg.UserName==null&&msg.FullName==null&&msg.Email==null)
                 {
                     user = new User()
                     {
@@ -184,7 +185,7 @@ namespace Event_System.Controllers
                 else { 
                 
                   
-                    return BadRequest(errorMassage);
+                    return BadRequest(msg);
                 
                 }
                 
@@ -247,7 +248,10 @@ namespace Event_System.Controllers
                     attendee.Role=update_Attendee.Role??4;
 
                     attendeeUser.UserName = update_Attendee.UserName;
-                    attendeeUser.HashedPassword = BCrypt.Net.BCrypt.HashPassword(update_Attendee.Password);
+                    if (update_Attendee.Password != null)
+                    {
+                        attendeeUser.HashedPassword = BCrypt.Net.BCrypt.HashPassword(update_Attendee.Password);
+                    }
                     _eventContext.SaveChanges();
 
                     return Ok();
@@ -303,7 +307,7 @@ namespace Event_System.Controllers
                         if (checkIfHeIsParticipants)
                         {
 
-                            return BadRequest("You cannot delete this attendee while he is  registered as a participant in one or more events.");
+                            return BadRequest(new { msg = "You cannot delete this attendee while he is  registered as a participant in one or more events." });
 
                         }
                         massage = "Removed Attendee successfully";
@@ -384,6 +388,7 @@ namespace Event_System.Controllers
                                    UserId=attendee.UserId,
                                    UserName=attendee.UserNavigation.UserName,
                                    Role=attendee.Role,
+                                   IsActive=attendee.IsActive
                                    
                                    
                                    
