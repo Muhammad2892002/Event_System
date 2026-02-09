@@ -216,8 +216,10 @@ export class AttendeeComponent {
         this.closeEditModal.nativeElement.click();
       },
       error:err=>{
-           console.log('FULL ERROR:', err);
-      console.log('API Validation Errors:', err.error);
+   console.log(err.error);
+        console.error("error");
+       
+        alert(err.error.fullName+"\n"+err.error.userName+"\n"+err.error.email);
 
 
       }

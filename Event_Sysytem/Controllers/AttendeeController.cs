@@ -211,6 +211,7 @@ namespace Event_System.Controllers
         {
             try
             {
+                ErrorMassageDto msg = new ErrorMassageDto();
 
                 var attendee = _eventContext.Attendees.FirstOrDefault(attende => attende.Id == update_Attendee.Id);
                 if (attendee != null)
@@ -220,41 +221,49 @@ namespace Event_System.Controllers
                     var isUserNameExist = _eventContext.Users.Any(obj => obj.UserName == update_Attendee.UserName && obj.Id != attendeeUser.Id);
                     if (isUserNameExist)
                     {
-                        return BadRequest("You cant use Existed User Name");
+                        msg.UserName = "You cant use Existed User Name";
 
                     }
-                    var checkNameExist = _eventContext.Attendees.Any(obj =>  obj.Id != update_Attendee.Id && (obj.FirstName == update_Attendee.FirstName && obj.LastName == update_Attendee.LastName));
+                    var checkNameExist = _eventContext.Attendees.Any(obj => obj.Id != update_Attendee.Id && (obj.FirstName == update_Attendee.FirstName && obj.LastName == update_Attendee.LastName));
                     if (checkNameExist)
                     {
 
-                        return BadRequest("This name is already exist.");
+                        msg.FullName = "This name is already exist.";
                     }
 
                     if (isEmailExist)
                     {
 
-                        return BadRequest("You cant Use This Email");
+                        msg.Email = "You cant Use This Email";
 
 
                     }
 
 
-                    attendee.FirstName = update_Attendee.FirstName;
-                    attendee.LastName = update_Attendee.LastName;
-                    attendee.Gender = update_Attendee.Gender;
-                    attendee.CreatedAt = attendee.CreatedAt;
-                    attendee.Email = update_Attendee.Email;
-                    attendee.IsActive = update_Attendee.IsActive;
-                    attendee.Role=update_Attendee.Role??4;
-
-                    attendeeUser.UserName = update_Attendee.UserName;
-                    if (update_Attendee.Password != null)
+                    if (msg.UserName == null && msg.FullName == null && msg.Email == null)
                     {
-                        attendeeUser.HashedPassword = BCrypt.Net.BCrypt.HashPassword(update_Attendee.Password);
-                    }
-                    _eventContext.SaveChanges();
+                        attendee.FirstName = update_Attendee.FirstName;
+                        attendee.LastName = update_Attendee.LastName;
+                        attendee.Gender = update_Attendee.Gender;
+                        attendee.CreatedAt = attendee.CreatedAt;
+                        attendee.Email = update_Attendee.Email;
+                        attendee.IsActive = update_Attendee.IsActive;
+                        attendee.Role = update_Attendee.Role ?? 4;
 
-                    return Ok();
+                        attendeeUser.UserName = update_Attendee.UserName;
+                        if (update_Attendee.Password != null)
+                        {
+                            attendeeUser.HashedPassword = BCrypt.Net.BCrypt.HashPassword(update_Attendee.Password);
+                        }
+                        _eventContext.SaveChanges();
+
+                        return Ok(new { masg = "Updated Successfully" });
+                    }
+                    else {
+
+                        return BadRequest(msg);
+                    
+                    }
                 }
                 return BadRequest("There is No Attendee");
 
