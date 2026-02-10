@@ -46,9 +46,12 @@
 
       <!-- Sign Out button -->
       <button type="button" class="btn btn-outline-danger"
+      (click)="resetLocalStorage()"
       routerLink="/login"
       >
-        <i class="bi bi-box-arrow-down-right"></i>
+        <i class="bi bi-box-arrow-down-right">
+          
+        </i>
         Sign Out
       </button>
 

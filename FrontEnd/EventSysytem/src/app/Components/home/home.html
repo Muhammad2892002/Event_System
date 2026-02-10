@@ -1,5 +1,5 @@
 
-@if(true){
+@if(roleCheck("admin")){
 <div class="main-div d-flex flex-wrap gap-4">
 
   <!-- Event Join Requests -->
@@ -83,7 +83,7 @@
 
 }
 
-@if(false){
+@if(roleCheck("organizer")){
 <div class="main-div">
 
      <div class="card custom-home-card shadow-sm flex-fill">
@@ -132,7 +132,7 @@
 
 
 
-@if(false){
+@if(roleCheck("attendee")){
 <div class="events-grid">
   @for(event of AllEvents ; track event.Id) {
     <div class="card shadow-sm h-100 m-3 custom-card">

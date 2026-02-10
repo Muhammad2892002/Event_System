@@ -11,7 +11,7 @@ using Microsoft.Identity.Client;
 
 namespace Event_System.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AttendeeController : ControllerBase
@@ -22,7 +22,7 @@ namespace Event_System.Controllers
             _eventContext = eventContext;
 
         }
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetByCriteria")]
 
         public IActionResult GetByCriteria([FromQuery] SearchAttendee? searchAttendee)
@@ -102,7 +102,7 @@ namespace Event_System.Controllers
 
 
         }
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("Create")]
 
         public IActionResult Create([FromBody] CreateAteendeeDto createNewAttendee)
@@ -204,7 +204,7 @@ namespace Event_System.Controllers
 
 
         }
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut("Update")]
 
         public IActionResult Update([FromBody] Update_Attendee update_Attendee)
@@ -279,7 +279,7 @@ namespace Event_System.Controllers
 
 
         }
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("Delete/{id}")]
         public IActionResult Delete(long? id)
         {

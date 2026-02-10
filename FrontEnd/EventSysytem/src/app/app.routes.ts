@@ -9,14 +9,15 @@ import { RequestToBeOrganizer } from './Components/request-to-be-organizer/reque
 import { RequestsToJoinEvent } from './Components/requests-to-join-event/requests-to-join-event';
 import { Login } from './Components/login/login';
 import { SignUp } from './Components/sign-up/sign-up';
+import { authGuard } from './auth-guard/auth-guard';
 
 export const routes: Routes = [
-    {path:'home',component:HomeComponent},
-    {path:'attendees',component:AttendeeComponent},
-    {path:'events',component:EventComponent},
-    {path:'eventParticipants',component:EventParticipants},
-    {path:'requestToBeOrganizer',component:RequestToBeOrganizer},
-    {path:'requestsToJoinEvent',component:RequestsToJoinEvent},
+    {path:'home',component:HomeComponent,canActivate:[authGuard]},
+    {path:'attendees',component:AttendeeComponent,canActivate:[authGuard]},
+    {path:'events',component:EventComponent,canActivate:[authGuard]},
+    {path:'eventParticipants',component:EventParticipants,canActivate:[authGuard]},
+    {path:'requestToBeOrganizer',component:RequestToBeOrganizer,canActivate:[authGuard]},
+    {path:'requestsToJoinEvent',component:RequestsToJoinEvent,canActivate:[authGuard]},
     {path:'login',component:Login},
     {path:'sign-up',component:SignUp},
     {path:'',redirectTo:'home',pathMatch:'full'}

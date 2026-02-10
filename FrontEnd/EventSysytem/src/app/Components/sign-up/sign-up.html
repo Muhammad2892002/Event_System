@@ -33,20 +33,29 @@
 
 <div class="signup-card">
     <h4 class="text-center mb-4">Sign Up</h4>
-<form [formGroup]="AttendeeEditForm">
+<form [formGroup]="AttendeeForm">
     <div class="row g-3">
         
 
         <div class="col-md-4">
+            
             <div class="form-floating">
-                <input type="text" class="form-control" id="username" placeholder="Username" formControlName="userName">
+              
+                
+              
+                <input type="text" class="form-control" id="username" placeholder="Username"
+                [class.errorBorder]="AttendeeForm.get('userName')?.invalid && AttendeeForm.get('userName')?.touched"
+                 formControlName="userName">
                 <label for="username">Username</label>
+
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="form-floating">
-                <input type="text" class="form-control" id="firstName" placeholder="First Name"
+                <input type="text" class="form-control"
+                [class.errorBorder]="AttendeeForm.get('firstName')?.invalid && AttendeeForm.get('firstName')?.touched"
+                 id="firstName" placeholder="First Name"
                 formControlName="firstName">
                 <label for="firstName">First Name</label>
             </div>
@@ -54,7 +63,10 @@
 
         <div class="col-md-4">
             <div class="form-floating">
-                <input type="text" class="form-control" id="lastName" placeholder="Last Name"
+                <input type="text" class="form-control"
+                
+                [class.errorBorder]="AttendeeForm.get('lastName')?.invalid && AttendeeForm.get('lastName')?.touched"
+                id="lastName" placeholder="Last Name"
                 formControlName="lastName"
                 >
                 <label for="lastName">Last Name</label>
@@ -63,7 +75,10 @@
 
         <div class="col-md-4">
             <div class="form-floating">
-                <input type="email" class="form-control" id="email" placeholder="name@example.com"
+                <input type="email" class="form-control" id="email"
+                [class.errorBorder]="AttendeeForm.get('email')?.invalid && AttendeeForm.get('email')?.touched"
+                
+                placeholder="name@example.com"
                 formControlName="email">
                 <label for="email">Email</label>
             </div>
@@ -71,7 +86,9 @@
 
         <div class="col-md-4">
             <div class="form-floating">
-                <input type="password" class="form-control" id="password" placeholder="Password"
+                <input type="password" class="form-control"
+                [class.errorBorder]="AttendeeForm.get('password')?.invalid && AttendeeForm.get('password')?.touched"
+                 id="password" placeholder="Password"
                 formControlName="password">
                 <label for="password">Password</label>
             </div>
@@ -81,12 +98,14 @@
 
         <div class="col-md-4">
             <div class="form-floating">
-                <select class="form-select" id="gender"
+                <select class="form-select"
+                [class.errorBorder]="AttendeeForm.get('gender')?.invalid && AttendeeForm.get('gender')?.touched"
+                id="gender"
                 formControlName="gender"
                 >
-                    <option value="" selected disabled>Choose...</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
+                    <option [ngValue]="null" selected >Choose...</option>
+                    <option [ngValue]="true">Male</option>
+                    <option [ngValue]="false">Female</option>
                 </select>
                 <label for="gender">Gender</label>
             </div>
@@ -94,7 +113,8 @@
 
         <!-- Button -->
         <div class="col-12">
-            <button  (click)="showForms()"  routerLink="/login" class="btn btn-primary w-100 mt-3">Create Account</button>
+            <button  [disabled]="!AttendeeForm.valid"  
+            (click)="addAttendee()"  routerLink="/login" class="btn btn-primary w-100 mt-3">Create Account</button>
         </div>
 
     </div>

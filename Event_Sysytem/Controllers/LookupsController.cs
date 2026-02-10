@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Event_System.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LookupsController : ControllerBase

@@ -12,7 +12,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Event_System.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EventController : ControllerBase
@@ -24,7 +24,7 @@ namespace Event_System.Controllers
 
             eventContext = _eventContext;
         }
-        //[Authorize(Roles = "Organizer,Admin")]
+       
         [HttpGet("GetByCriteria")]
         public IActionResult GetByCriteria([FromQuery]SearchEventDto searchdto) {
             try {
@@ -146,7 +146,7 @@ namespace Event_System.Controllers
         
         
         }
-        //[Authorize(Roles = "Organizer,Admin")]
+        [Authorize(Roles = "Organizer,Admin")]
         [HttpPost("CreateEvent")]
         public IActionResult CreateEvent([FromBody] CreateEventDto createEvent)
         { 
@@ -209,7 +209,7 @@ namespace Event_System.Controllers
         
         }
 
-        //[Authorize(Roles = "Organizer,Admin")]
+        [Authorize(Roles = "Organizer,Admin")]
         [HttpPut("UpdateEvent")]
         public IActionResult UpdateEvent([FromBody] CreateEventDto createEvent)
         {
@@ -286,7 +286,7 @@ namespace Event_System.Controllers
         
         
         }
-        //[Authorize(Roles = "Organizer,Admin")]
+        [Authorize(Roles = "Organizer,Admin")]
         [HttpDelete("DeleteEvent/{id}")]
 
         public IActionResult DeleteEvent(long Id) {
@@ -299,7 +299,7 @@ namespace Event_System.Controllers
 
                     eventContext.Events.Remove(TargtedEvent);
                     eventContext.SaveChanges();
-                    return Ok("Event Deleted Successfully");
+                    return Ok(new { msg= "Event Deleted Successfully" });
 
 
                 }

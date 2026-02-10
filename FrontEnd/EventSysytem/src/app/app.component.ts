@@ -19,6 +19,9 @@ constructor(public router :Router){}
 
 
   }
+  resetLocalStorage(){
+    localStorage.clear();
+  }
 
 }
 //hello world

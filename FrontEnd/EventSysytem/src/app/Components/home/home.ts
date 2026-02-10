@@ -216,4 +216,10 @@ export class HomeComponent {
     })
   }
 
+ roleCheck(para:string):boolean{
+ let role=localStorage.getItem("Role")?.toUpperCase();
+ para=para.toUpperCase();
+  return role==para;
+ }
+
 }

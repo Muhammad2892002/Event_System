@@ -53,7 +53,7 @@ namespace Event_System.Controllers
                 }
                 else {
 
-                    return BadRequest("User not found");
+                    return BadRequest(new { msg= "User not found" });
                 }
 
                 return BadRequest();

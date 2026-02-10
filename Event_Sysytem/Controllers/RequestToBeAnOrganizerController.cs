@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Event_System.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RequestToBeAnOrganizerController : ControllerBase
@@ -21,7 +21,7 @@ namespace Event_System.Controllers
            _eventContext = eventContext;
         
         }
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetByCriteria")]
         public IActionResult GetByCriteria([FromQuery]SearchRequestDto searchRequestDto) {
             try
@@ -61,7 +61,7 @@ namespace Event_System.Controllers
            
         
         }
-        //[Authorize(Roles = "Admin,Attendee")]
+        [Authorize(Roles = "Admin,Attendee")]
         [HttpPost("SendRequest")]
         public IActionResult SendRequest(int AttendeeId)
         {
@@ -106,7 +106,7 @@ namespace Event_System.Controllers
         
         
         }
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateRequest")]
         public IActionResult UpdateRequest(UpdateOrganizerRequestDto obj)
         {
@@ -177,7 +177,7 @@ namespace Event_System.Controllers
         
         
         }
-        //[Authorize(Roles = "Admin,Attendee")]
+        [Authorize(Roles = "Admin,Attendee")]
         [HttpDelete("DeleteRequest/{id}")]
         public IActionResult DeleteRequest(long Id) {
             try
