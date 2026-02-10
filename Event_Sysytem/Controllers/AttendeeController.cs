@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using System.Security.Claims;
 
 namespace Event_System.Controllers
 {
@@ -22,69 +23,147 @@ namespace Event_System.Controllers
             _eventContext = eventContext;
 
         }
-        [Authorize(Roles = "Admin")]
+        
         [HttpGet("GetByCriteria")]
 
         public IActionResult GetByCriteria([FromQuery] SearchAttendee? searchAttendee)
         {
             try
             {
-                var allAttendes = (from attendee in _eventContext.Attendees
-                                   join user in _eventContext.Users
-                                   on attendee.UserId equals user.Id
+                var role = User.FindFirst(ClaimTypes.Role)?.Value.ToUpper();
+               
+                if (role == "admin".ToUpper())
+                {
 
-                                   where
-                              (
+                    var allAttendes = (from attendee in _eventContext.Attendees
+                                       join user in _eventContext.Users
+                                       on attendee.UserId equals user.Id
 
-                                 (searchAttendee.AteendeeFirstName == null || attendee.FirstName.ToUpper().Trim().Contains(searchAttendee.AteendeeFirstName.ToUpper().Trim()))
-                                 &&
-                                  (searchAttendee.AteendeeLastName == null || attendee.LastName.ToUpper().Trim().Contains(searchAttendee.AteendeeLastName.ToUpper().Trim()))
-                                  &&
+                                       where
+                                  (
 
-                                (searchAttendee.IsActivated == attendee.IsActive || searchAttendee.IsActivated == null)
-                                &&
-                                (attendee.Gender == searchAttendee.Gender || searchAttendee.Gender == null) &&
+                                     (searchAttendee.AteendeeFirstName == null || attendee.FirstName.ToUpper().Trim().Contains(searchAttendee.AteendeeFirstName.ToUpper().Trim()))
+                                     &&
+                                      (searchAttendee.AteendeeLastName == null || attendee.LastName.ToUpper().Trim().Contains(searchAttendee.AteendeeLastName.ToUpper().Trim()))
+                                      &&
 
-
-                                (attendee.Role == (int)searchAttendee.Role || searchAttendee.Role == null)
-                               )
-                                   orderby attendee.Id
-                                   select new ShowAllAtendeeDto
-                                   {
-                                       Id = attendee.Id,
-                                       UserId = attendee.UserId,
-                                       Role = attendee.Role,
-                                       FirstName = attendee.FirstName,
-                                       LastName = attendee.LastName,
-                                       Gender = attendee.Gender,
-
-                                       GenderName = attendee.Gender ? "Male" : "Female",
-                                       CreatedAt = attendee.CreatedAt,
-                                       Email = attendee.Email,
-
-                                       IsActive = attendee.IsActive,
-
-                                       UserName = user.UserName,
-
-                                       Password = user.HashedPassword,
-                                       RoleName = attendee.RoleNavigation.Name
+                                    (searchAttendee.IsActivated == attendee.IsActive || searchAttendee.IsActivated == null)
+                                    &&
+                                    (attendee.Gender == searchAttendee.Gender || searchAttendee.Gender == null) &&
 
 
+                                    (attendee.Role == (int)searchAttendee.Role || searchAttendee.Role == null)
+                                   )
+                                       orderby attendee.Id
+                                       select new ShowAllAtendeeDto
+                                       {
+                                           Id = attendee.Id,
+                                           UserId = attendee.UserId,
+                                           Role = attendee.Role,
+                                           FirstName = attendee.FirstName,
+                                           LastName = attendee.LastName,
+                                           Gender = attendee.Gender,
 
+                                           GenderName = attendee.Gender ? "Male" : "Female",
+                                           CreatedAt = attendee.CreatedAt,
+                                           Email = attendee.Email,
 
+                                           IsActive = attendee.IsActive,
 
+                                           UserName = user.UserName,
 
-
-
-
-                                   }).ToList();
+                                           Password = user.HashedPassword,
+                                           RoleName = attendee.RoleNavigation.Name
 
 
 
 
 
 
-                return Ok(allAttendes);
+
+
+
+                                       }).ToList();
+
+                    return Ok(allAttendes);
+
+
+
+                }
+                else {
+                    var UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+
+
+                    var allAttendes = (from attendee in _eventContext.Attendees
+                                           join user in _eventContext.Users
+                                           on attendee.UserId equals user.Id
+
+                                           where
+                                      (
+                                       (searchAttendee.AteendeeFirstName == null || attendee.FirstName.ToUpper().Trim().Contains(searchAttendee.AteendeeFirstName.ToUpper().Trim()))
+                                     &&
+                                      (searchAttendee.AteendeeLastName == null || attendee.LastName.ToUpper().Trim().Contains(searchAttendee.AteendeeLastName.ToUpper().Trim()))
+                                      &&
+
+                                    (searchAttendee.IsActivated == attendee.IsActive || searchAttendee.IsActivated == null)
+                                    &&
+                                    (attendee.Gender == searchAttendee.Gender || searchAttendee.Gender == null) &&
+
+
+                                    (attendee.Role == (int)searchAttendee.Role || searchAttendee.Role == null)&&
+
+                                        attendee.Id==long.Parse(UserId)
+                                       )
+                                           orderby attendee.Id
+                                           select new ShowAllAtendeeDto
+                                           {
+                                               Id = attendee.Id,
+                                               UserId = attendee.UserId,
+                                               Role = attendee.Role,
+                                               FirstName = attendee.FirstName,
+                                               LastName = attendee.LastName,
+                                               Gender = attendee.Gender,
+
+                                               GenderName = attendee.Gender ? "Male" : "Female",
+                                               CreatedAt = attendee.CreatedAt,
+                                               Email = attendee.Email,
+
+                                               IsActive = attendee.IsActive,
+
+                                               UserName = user.UserName,
+
+                                               Password = user.HashedPassword,
+                                               RoleName = attendee.RoleNavigation.Name
+
+
+
+
+
+
+
+
+
+                                           }).ToList();
+
+
+
+
+
+
+
+                    
+                
+                 return Ok(allAttendes);
+                
+                }
+
+
+
+
+
+
+                   
 
 
 

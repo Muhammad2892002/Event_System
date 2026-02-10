@@ -301,4 +301,10 @@ export class AttendeeComponent {
 
   }
 
+   roleCheck(para:string):boolean{
+ let role=localStorage.getItem("Role")?.toUpperCase();
+ para=para.toUpperCase();
+  return role==para.toUpperCase();
+ }
+
 }

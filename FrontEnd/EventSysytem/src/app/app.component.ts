@@ -7,21 +7,39 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
+
+ 
 export class AppComponent {
   title = 'EventSysytem';
+   
 constructor(public router :Router){}
     showNavbar():boolean{
    
   return this.router.url !== '/login' && this.router.url !== '/sign-up';
 
 
-  
+ 
 
 
   }
   resetLocalStorage(){
     localStorage.clear();
   }
+
+
+
+     rolecheck(){
+    if(localStorage.getItem("Role")?.toUpperCase()==="admin".toUpperCase()){
+      return true;
+    }
+    else{
+      return false;
+    }
+   }
+
+
+
+      
 
 }
 //hello world

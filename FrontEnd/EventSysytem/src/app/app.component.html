@@ -31,20 +31,40 @@
             Event
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" routerLink="/events" routerLinkActive="active">All Events</a></li>
+                 @if(rolecheck()){
+
+                  <li><a class="dropdown-item" routerLink="/events" routerLinkActive="active">All Events</a></li>
+
+                   <li><a class="dropdown-item" routerLink="/requestsToJoinEvent" routerLinkActive="active">Requests To Join Event</a></li>
+                 }
+            
             <li><a class="dropdown-item" routerLink="/eventParticipants" routerLinkActive="active">All Participants</a></li>
-            <li><a class="dropdown-item" routerLink="/requestsToJoinEvent" routerLinkActive="active">Requests To Join Event</a></li>
+           
           </ul>
         </li>
+        @if(rolecheck()){
 
         <!-- Requests (other requests not tied to events) -->
         <li class="nav-item">
           <a class="nav-link" routerLink="/requestToBeOrganizer" routerLinkActive="active">Request To Be Organizer</a>
         </li>
+      }
 
       </ul>
+      <div class="buttons">
 
-      <!-- Sign Out button -->
+            <!-- Sign Out button -->
+      <button type="button" class="btn btn-success me-3"
+    
+      >
+       
+        Be an organizer
+      </button>
+
+
+
+
+          <!-- Sign Out button -->
       <button type="button" class="btn btn-outline-danger"
       (click)="resetLocalStorage()"
       routerLink="/login"
@@ -54,6 +74,11 @@
         </i>
         Sign Out
       </button>
+
+      </div>
+      
+
+    
 
     </div>
   </div>

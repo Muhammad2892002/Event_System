@@ -98,8 +98,11 @@ export class HomeComponent {
     this.getAllPendingRequestToJoinEvent();
     this.getAllPendingRequestToAnOrganizer();
     this.getAllEvents();
+   
+  
 
   }
+ 
      getAllPendingRequestsToBeAnOrganizer:FormGroup=new FormGroup({
     status:new FormControl<number | null>(null),
     requestedTime:new FormControl<string | null>(null),
@@ -219,7 +222,7 @@ export class HomeComponent {
  roleCheck(para:string):boolean{
  let role=localStorage.getItem("Role")?.toUpperCase();
  para=para.toUpperCase();
-  return role==para;
+  return role==para.toUpperCase();
  }
 
 }
