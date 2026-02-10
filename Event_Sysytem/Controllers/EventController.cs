@@ -1,11 +1,14 @@
 ﻿using Event_System.DbContexts;
 using Event_System.Dtos.EventDto;
+using  Event_System.Dtos.EventDto.ErrorMassageDto;
 using Event_System.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace Event_System.Controllers
 {
@@ -146,22 +149,31 @@ namespace Event_System.Controllers
         //[Authorize(Roles = "Organizer,Admin")]
         [HttpPost("CreateEvent")]
         public IActionResult CreateEvent([FromBody] CreateEventDto createEvent)
-        {
+        { 
+            EventErrorMassageDto error = new EventErrorMassageDto();
+            
+
+           
+            
             try {
                 var checkOrganizer = eventContext.Attendees.Any(obj=>obj.Id==createEvent.OrganizerId&&obj.Role==(int)Enums.Roles.Organizer);
                 if (!checkOrganizer) { 
                 
-                 return BadRequest("Organizer not found.");
+                  error.OrganizerError= "Organizer not found.";
                 }
                 var checkDateAndTimeEvent = eventContext.Events.Any(obj=>obj.Location==createEvent.Location&&obj.EventDate.Date ==createEvent.EventDate.Date);
                 if (checkDateAndTimeEvent) { 
                 
-                 return BadRequest("Choose another Day or place ");
+                 error.ErrorDateErrorMsg="Choose another Day or place ";
                 }
                 if (createEvent.MaxParticipants<=0) { 
                 
-                  return BadRequest("Please enter a value greater than zero.");
+                  error.ErrorMassageMaxParticipantsErrorMsg="Please enter a value greater than zero.";
                 
+                }
+                if (error.OrganizerError != null || error.ErrorDateErrorMsg != null || error.ErrorMassageMaxParticipantsErrorMsg != null) { 
+                
+                  return BadRequest(error);
                 }
 
                 Event addNewEvent=new Event() {
@@ -202,14 +214,15 @@ namespace Event_System.Controllers
         public IActionResult UpdateEvent([FromBody] CreateEventDto createEvent)
         {
             try {
-              
+                EventErrorMassageDto error = new EventErrorMassageDto();
+
                 var fetchEvent = eventContext.Events.FirstOrDefault(obj => obj.Id == createEvent.Id);
                 if (fetchEvent != null)
                 { var checkDateAndTimeEvent = eventContext.Events.Any(obj => obj.Location == createEvent.Location && obj.EventDate.Date == createEvent.EventDate.Date && obj.Id != createEvent.Id);
                     var checkOrganizer = eventContext.Attendees.Any(obj => obj.Id == createEvent.OrganizerId && obj.Role == (int)Enums.Roles.Organizer);
                     if (checkDateAndTimeEvent)
                     {
-                        return BadRequest("Choose another Day or place ");
+                        error.ErrorDateErrorMsg = "Choose another Day or place ";
 
 
 
@@ -219,27 +232,38 @@ namespace Event_System.Controllers
                     if (createEvent.MaxParticipants <= 0)
                     {
 
-                        return BadRequest("Please enter a value greater than zero.");
+                        error.ErrorMassageMaxParticipantsErrorMsg = "Please enter a value greater than zero.";
 
                     }
 
                     if (!checkOrganizer)
                     {
 
-                        return BadRequest("Organizer not found.");
+                        error.OrganizerError = "Organizer not found.";
                     }
-                   
-                   
-                  
-                    fetchEvent.Title = createEvent.Title;
-                    fetchEvent.Description = createEvent.Description;
-                    fetchEvent.Location = createEvent.Location;
-                    fetchEvent.CreatedAt = createEvent.CreatedAt;
-                    fetchEvent.EventDate = createEvent.EventDate;
-                    fetchEvent.MaxParticipants = createEvent.MaxParticipants;
-                    fetchEvent.OrganizerId = createEvent.OrganizerId;
 
-                    eventContext.SaveChanges();
+                    if (error.OrganizerError == null && error.ErrorDateErrorMsg == null && error.ErrorMassageMaxParticipantsErrorMsg == null)
+                    {
+
+
+
+
+
+
+                        fetchEvent.Title = createEvent.Title;
+                        fetchEvent.Description = createEvent.Description;
+                        fetchEvent.Location = createEvent.Location;
+                        fetchEvent.CreatedAt = createEvent.CreatedAt;
+                        fetchEvent.EventDate = createEvent.EventDate;
+                        fetchEvent.MaxParticipants = createEvent.MaxParticipants;
+                        fetchEvent.OrganizerId = createEvent.OrganizerId;
+
+                        eventContext.SaveChanges();
+                    }
+                    else {
+
+                        return BadRequest(error);
+                    }
 
 
                 }

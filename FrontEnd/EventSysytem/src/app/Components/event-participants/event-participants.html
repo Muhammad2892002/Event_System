@@ -149,7 +149,9 @@
 
                     <!-- Participant Dropdown -->
                     <div class="mb-3">
-                        <label class="form-label">Participant</label>
+                        <label class="form-label">
+                            <i class="text-danger">*</i>
+                            Participant</label>
 
                         <select class="form-select"
                             formControlName="participantId">
@@ -162,7 +164,9 @@
 
                     <!-- Event Dropdown -->
                     <div class="mb-3">
-                        <label class="form-label">Event</label>
+                        <label class="form-label">
+                            <i class="text-danger">*</i>
+                            Event</label>
                         <select class="form-select" formControlName="eventId">
                                @for( item of AllEvents;track item.Id){
                             <option [value]="item.Id">{{item.Name}}</option>
@@ -179,6 +183,7 @@
                 <button type="button" class="btn btn-outline-secondary"
                     data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary"
+                [disabled]="!addAndUpdateParticipant.valid"
                     (click)="saveParticipantEvent()">Save</button>
             </div>
 

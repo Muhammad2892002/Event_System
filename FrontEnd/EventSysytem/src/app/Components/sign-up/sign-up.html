@@ -10,7 +10,7 @@
 
 <style>
     body {
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
         display: flex;
         justify-content: center;
@@ -20,8 +20,8 @@
 
     .signup-card {
         width: 100%;
-        max-width: 380px;
-        padding: 25px;
+        max-width: 600px; /* 👈 compact width */
+        padding: 20px;
         border-radius: 10px;
         background: #fff;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -33,39 +33,73 @@
 
 <div class="signup-card">
     <h4 class="text-center mb-4">Sign Up</h4>
+<form [formGroup]="AttendeeEditForm">
+    <div class="row g-3">
+        
 
-    <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="username" placeholder="Username">
-        <label for="username">Username</label>
+        <div class="col-md-4">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="username" placeholder="Username" formControlName="userName">
+                <label for="username">Username</label>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="firstName" placeholder="First Name"
+                formControlName="firstName">
+                <label for="firstName">First Name</label>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="lastName" placeholder="Last Name"
+                formControlName="lastName"
+                >
+                <label for="lastName">Last Name</label>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-floating">
+                <input type="email" class="form-control" id="email" placeholder="name@example.com"
+                formControlName="email">
+                <label for="email">Email</label>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" placeholder="Password"
+                formControlName="password">
+                <label for="password">Password</label>
+            </div>
+        </div>
+
+       
+
+        <div class="col-md-4">
+            <div class="form-floating">
+                <select class="form-select" id="gender"
+                formControlName="gender"
+                >
+                    <option value="" selected disabled>Choose...</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <label for="gender">Gender</label>
+            </div>
+        </div>
+
+        <!-- Button -->
+        <div class="col-12">
+            <button  (click)="showForms()"  routerLink="/login" class="btn btn-primary w-100 mt-3">Create Account</button>
+        </div>
+
     </div>
 
-    <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="firstName" placeholder="First Name">
-        <label for="firstName">First Name</label>
-    </div>
-
-    <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="lastName" placeholder="Last Name">
-        <label for="lastName">Last Name</label>
-    </div>
-
-    <div class="form-floating mb-3">
-        <input type="email" class="form-control" id="email" placeholder="name@example.com">
-        <label for="email">Email address</label>
-    </div>
-
-    <!-- Gender -->
-    <div class="form-floating mb-4">
-        <select class="form-select" id="gender">
-            <option value="" selected disabled>Choose...</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select>
-        <label for="gender">Gender</label>
-    </div>
-
-    <button class="btn btn-primary w-100">Create Account</button>
+</form>
 </div>
-
 </body>
 </html>

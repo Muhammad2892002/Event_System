@@ -9,6 +9,16 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 })
 export class AppComponent {
   title = 'EventSysytem';
+constructor(public router :Router){}
+    showNavbar():boolean{
+   
+  return this.router.url !== '/login' && this.router.url !== '/sign-up';
+
+
+  
+
+
+  }
 
 }
 //hello world

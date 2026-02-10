@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FormGroup, FormControlName, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
@@ -14,7 +14,7 @@ import { DeleteConfirmation } from '../delete-confirmation/delete-confirmation';
 
 @Component({
   selector: 'app-event',
-  imports: [ReactiveFormsModule, NgClass, NgxPaginationModule, DatePipe,DeleteConfirmation],
+  imports: [ReactiveFormsModule, NgClass, NgxPaginationModule, DatePipe, DeleteConfirmation],
 
   templateUrl: './event.html',
   styleUrl: './event.css',
@@ -23,6 +23,7 @@ export class EventComponent {
   constructor(private _allOrganizers: AttendeeService, private _places: Lookup, private _eventService: EventService) {
 
   }
+  @ViewChild('DeleteDialog') closeDialog!: ElementRef;
   ngOnInit() {
     this.click();//load all events at the beginning
     this.loadAllOrganizers();
@@ -75,7 +76,7 @@ export class EventComponent {
   allEvents: EventObj[] = [];
 
   searchEventForm: FormGroup = new FormGroup({
-     Id: new FormControl<number | null>(null),
+    Id: new FormControl<number | null>(null),
     title: new FormControl<string | null>(null),
     eventDate: new FormControl<string | null>(null),
     organizerId: new FormControl<number | null>(null),
@@ -139,7 +140,7 @@ export class EventComponent {
 
   // Typed FormGroup
   eventForm: FormGroup = new FormGroup({
-    id: new FormControl<number | null>(null, Validators.required),
+    id: new FormControl<number | null>(null),
     title: new FormControl<string | null>(null, Validators.required),
     eventDate: new FormControl<string | null>(null, Validators.required), // date as string
     locationId: new FormControl<number | null>(null, Validators.required),
@@ -149,111 +150,128 @@ export class EventComponent {
   });
 
   saveEvent() {
-    if (this.eventForm.valid) {
-      let eventObj: EventObj = {
-        Id: this.eventForm.value.id ??0,
-        Title: this.eventForm.value.title,
-        Description: this.eventForm.value.description,
-        Location: this.eventForm.value.locationId,
-        EventDate: this.eventForm.value.eventDate,
-        maxParticipants: this.eventForm.value.maxParticipants,
-        OrganizerId: this.eventForm.value.organizerId,
-     
 
+    let eventObj: EventObj = {
+      Id: this.eventForm.value.id ?? 0,
+      Title: this.eventForm.value.title,
+      Description: this.eventForm.value.description ?? null,
+      Location: this.eventForm.value.locationId,
+      EventDate: this.eventForm.value.eventDate,
+      maxParticipants: this.eventForm.value.maxParticipants,
+      OrganizerId: this.eventForm.value.organizerId,
 
-      }
-      if (this.eventForm.value.id == null) {
-        this._eventService.AddEvent(eventObj).subscribe({
-          next: (res: any) => {
-            console.log("Added Successfully");
-            this.click();
-          },
-          error: err => {
-           console.log('Status:', err.status);          // 400
-  console.log('Backend error:', err.error); 
-          }
-
-
-
-
-
-        });
-
-      }
-      else { 
-        this._eventService.UpdateEvent(eventObj).subscribe({
-
-          next:(res:any)=>{
-            console.log("Added successfully");
-          },
-          error:err=>{
-            console.log(err);
-          }
-        })
-        
-
-
-
-      }
 
 
     }
+    if (this.eventForm.value.id == null) {
+      this._eventService.AddEvent(eventObj).subscribe({
+        next: (res: any) => {
+          alert("Added successfully");
+          this.click();
+          this.closeDialog.nativeElement.click();
+        },
+        error: err => {
+          console.log(err.error);
 
+          alert(
+            (err.error.errorMassageMaxParticipantsErrorMsg ?? "") + "\n" +
+            (err.error.errorDateErrorMsg ?? "") + "\n" +
+            (err.error.organizerError ?? "")
+          );
+
+
+
+
+
+        }
+
+
+
+
+
+      });
+
+    }
     else {
-      console.log('Form is invalid');
+      this._eventService.UpdateEvent(eventObj).subscribe({
+
+        next: (res: any) => {
+          alert("Updated successfully");
+          this.click();
+          this.closeDialog.nativeElement.click();
+        },
+        error: err => {
+          console.log(err.error);
+          alert(
+            (err.error.errorMassageMaxParticipantsErrorMsg ?? "") + "\n" +
+            (err.error.errorDateErrorMsg ?? "") + "\n" +
+            (err.error.organizerError ?? "")
+          );
+        }
+      })
+
+
+
+
     }
+
+
+
+
+
   }
-  clearForm(){
+  clearForm() {
     this.eventForm.reset();
   }
-  loadEvent(id:number){
+  loadEvent(id: number) {
     this.clearForm();
     this._eventService.getEventById(id).subscribe({
-      next:(res:any)=>{
+      next: (res: any) => {
         this.eventForm.patchValue({
-          id:res.id,
-          title:res.title,
-          eventDate:res.eventDate,
-          locationId:res.location,
-          organizerId:res.organizerId,
-          maxParticipants:res.maxParticipants,
-          description:res.description
+          id: res.id,
+          title: res.title,
+          eventDate: res.eventDate,
+          locationId: res.location,
+          organizerId: res.organizerId,
+          maxParticipants: res.maxParticipants,
+          description: res.description
         });
       },
-      error:err=>{}
+      error: err => { }
     })
   }
-  deleteConfirmation:boolean=false;
-  title="Event delete confirmation";
-  content="Are you sure you wants to delete this event?";
-  eventId?:number|null=0;
+  deleteConfirmation: boolean = false;
+  title = "Event delete confirmation";
+  content = "Are you sure you wants to delete this event?";
+  eventId?: number | null = 0;
 
-  confirmAttendeeDelete(event:boolean){
+  confirmAttendeeDelete(event: boolean) {
 
-    if(event){
+    if (event) {
       alert("hehehehehe good try ");
       this._eventService.DeleteEvent(this.eventId).subscribe({
 
-        next:(res:any)=>{
+        next: (res: any) => {
           alert("Deleted successfully");
+          this.click();
 
         },
-        error:err=>{
+        error: err => {
           alert("cant be deleted");
 
         }
       });
     }
-    else{
-      this.deleteConfirmation=false;
+    else {
+      this.deleteConfirmation = false;
 
 
     }
   }
 
-  showDeleteConfirmation(Id?:number){
-    this.deleteConfirmation=true;
-    this.eventId=Id;
+  showDeleteConfirmation(Id?: number) {
+    this.deleteConfirmation = true;
+    this.eventId = Id;
 
 
 

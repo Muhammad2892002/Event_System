@@ -14,6 +14,9 @@
 .card-header h4 {
   font-size: 1.1rem;
 }
+.errorBorder{
+      border-color: #f11919;
+}
 
 @media (max-width: 576px) {
   .card-header {

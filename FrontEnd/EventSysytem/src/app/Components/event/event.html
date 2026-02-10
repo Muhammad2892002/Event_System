@@ -1,3 +1,5 @@
+
+<section class="EventTable">
 <div class="container-fluid px-3">
 
     <!-- Filter Card -->
@@ -150,7 +152,9 @@
     </div>
 
 </div>
+</section >
 
+<section class="Add&UpdateEvent">
 <!-- Add / Update Event Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1"
     aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -176,34 +180,71 @@
 
                         <!-- Title -->
                         <div class="col-md-6">
-                            <label class="form-label">Title</label>
+                            <label class="form-label">
+                                <i class="text-danger">*</i>
+                                Title</label>
                             <input type="text" class="form-control"
+                            [class.errorBorder]="eventForm.get('title')?.invalid && eventForm.get('title')?.touched"
                                 formControlName="title">
+                                @if(eventForm.get('title')?.invalid && eventForm.get('title')?.touched){
+                                    <label class="text-danger">
+                                        This Field is Required.
+                                    </label>
+                                }
                         </div>
 
                         <!-- Event Date -->
                         <div class="col-md-6">
-                            <label class="form-label">Event Date</label>
+                            <label class="form-label">
+                                  <i class="text-danger">*</i>
+                                
+                                Event Date</label>
                             <input type="date" class="form-control"
+                            [class.errorBorder]="eventForm.get('eventDate')?.invalid && eventForm.get('eventDate')?.touched"
                                 formControlName="eventDate">
+
+
+                                 @if(eventForm.get('eventDate')?.invalid && eventForm.get('eventDate')?.touched){
+                                    <label class="text-danger">
+                                        This Field is Required.
+                                    </label>
+                                }
+
+                                
+
+
                         </div>
 
                         <!-- Location Dropdown -->
                         <div class="col-md-6">
-                            <label class="form-label">Location</label>
+                            <label class="form-label">
+                                  <i class="text-danger">*</i>
+                                Location</label>
                             <select class="form-select"
+                            [class.errorBorder]="eventForm.get('locationId')?.invalid && eventForm.get('locationId')?.touched"
                                 formControlName="locationId">
                                  @for(place of allLocations; track place.Id){
                             <option [ngValue]="place.Id">{{place.Name}}</option>
                             }
                              
                             </select>
+
+
+                             @if(eventForm.get('locationId')?.invalid && eventForm.get('locationId')?.touched){
+                                    <label class="text-danger">
+                                        This Field is Required.
+                                    </label>
+                                }
                         </div>
 
                         <!-- Organizer Dropdown -->
                         <div class="col-md-6">
-                            <label class="form-label">Organizer</label>
+                            <label class="form-label">
+                                  <i class="text-danger">*</i>
+                                
+                                Organizer</label>
                             <select class="form-select"
+                            [class.errorBorder]="eventForm.get('organizerId')?.invalid && eventForm.get('organizerId')?.touched"
                                 formControlName="organizerId">
                                 @for(organizer of allOrganizers; track
                                 organizer.Id){
@@ -212,13 +253,31 @@
                                 }
 
                             </select>
+
+                               @if(eventForm.get('organizerId')?.invalid && eventForm.get('organizerId')?.touched){
+                                    <label class="text-danger">
+                                        This Field is Required.
+                                    </label>
+                                }
+
+
                         </div>
 
                         <!-- Max Participants -->
                         <div class="col-md-6">
+                              <i class="text-danger">*</i>
                             <label class="form-label">Max Participants</label>
                             <input type="number" class="form-control"
+                            [class.errorBorder]="eventForm.get('maxParticipants')?.invalid && eventForm.get('maxParticipants')?.touched"
                                 formControlName="maxParticipants" min="1">
+
+                                   @if(eventForm.get('maxParticipants')?.invalid && eventForm.get('maxParticipants')?.touched){
+                                    <label class="text-danger">
+                                        This Field is Required.
+                                    </label>
+                                }
+
+
                         </div>
 
                         <!-- Description -->
@@ -235,14 +294,20 @@
             <!-- Modal Footer -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary"
+                #DeleteDialog
                     data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary"
+                [disabled]="!eventForm.valid"
                     (click)="saveEvent()">Save</button>
             </div>
 
         </div>
     </div>
-</div>
+</div>    
+</section>
+
+
+
 @if(deleteConfirmation){
 
     <app-delete-confirmation

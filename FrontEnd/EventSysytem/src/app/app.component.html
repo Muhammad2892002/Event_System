@@ -1,3 +1,5 @@
+
+@if(showNavbar()){
 <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
   <div class="container-fluid">
     <!-- Brand -->
@@ -43,7 +45,9 @@
       </ul>
 
       <!-- Sign Out button -->
-      <button type="button" class="btn btn-outline-danger">
+      <button type="button" class="btn btn-outline-danger"
+      routerLink="/login"
+      >
         <i class="bi bi-box-arrow-down-right"></i>
         Sign Out
       </button>
@@ -51,6 +55,6 @@
     </div>
   </div>
 </nav>
-
+}
 <!-- Router outlet -->
 <router-outlet></router-outlet>
