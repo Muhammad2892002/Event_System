@@ -20,7 +20,8 @@ import { EventObj } from '../../Interface/EventObj';
 export class HomeComponent {
   constructor(private requestToJoinEvent:RequestToJoinEventService,
     private requestToBeOrganizer:RequestToBeOrganizerService,
-    private eventService :EventService
+    private eventService :EventService,
+    private requestEventSer:RequestToJoinEventService
   ){}
 
 
@@ -57,9 +58,11 @@ export class HomeComponent {
 
       next:(res:any)=>{
         alert("Request changed");
+        this.reloadPage();
       },
       error:err=>{
-        console.log(err.err||err.error);
+        console.log(err);
+        console.log(err.error);
       }
     })
 
@@ -81,6 +84,7 @@ export class HomeComponent {
     this.requestToBeOrganizer.UpdateRequest(result).subscribe({
 
       next:(res:any)=>{
+        this.reloadPage();
         alert("Request changed");
       },
       error:err=>{
@@ -95,11 +99,24 @@ export class HomeComponent {
   }
 
   ngOnInit(){
-    this.getAllPendingRequestToJoinEvent();
-    this.getAllPendingRequestToAnOrganizer();
-    this.getAllEvents();
+    this.reloadPage();
+
    
   
+
+  }
+  clearAllRequests(){
+   //pendingRequestToJoinEvent:EventRequest[]=[];
+  //pendingRequestToBeOrganizer:showAllOragnizerRequest[]=[];
+  this.pendingRequestToJoinEvent=[];
+  this.pendingRequestToBeOrganizer=[];
+  }
+  reloadPage(){
+    this.clearAllRequests();
+     this.getAllPendingRequestToJoinEvent();
+    this.getAllPendingRequestToAnOrganizer();
+    this.getAllEvents();
+
 
   }
  
@@ -215,14 +232,34 @@ export class HomeComponent {
         })
 
       },
-      error:err=>{}
+      error:err=>{
+        console.log(err);
+        console.log(err.error);
+      }
     })
   }
 
  roleCheck(para:string):boolean{
  let role=localStorage.getItem("Role")?.toUpperCase();
  para=para.toUpperCase();
-  return role==para.toUpperCase();
+ let variable:boolean=role==para.toUpperCase();
+  return role===para.toUpperCase();
+ }
+
+ sendRequest(eventId:number){
+  this.requestEventSer.AddRequestToJoinEvent(eventId).subscribe({
+
+    next:(res:any)=>{
+      alert("Successfully sent");
+    },
+    error:err=>{
+      alert(err.error.msg);
+
+      console.log(err);
+      console.log(console.error);
+      
+    }
+  });
  }
 
 }

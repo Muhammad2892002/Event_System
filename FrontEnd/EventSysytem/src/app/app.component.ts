@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RequestToBeOrganizerService } from './Services/request-to-be-organizer';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 export class AppComponent {
   title = 'EventSysytem';
    
-constructor(public router :Router){}
+constructor(public router :Router,private requestToBeAnOrganizer :RequestToBeOrganizerService){}
     showNavbar():boolean{
    
   return this.router.url !== '/login' && this.router.url !== '/sign-up';
@@ -28,8 +29,8 @@ constructor(public router :Router){}
 
 
 
-     rolecheck(){
-    if(localStorage.getItem("Role")?.toUpperCase()==="admin".toUpperCase()){
+     roleAdmincheck(){
+    if(localStorage.getItem("Role")?.toUpperCase()==="admin".toUpperCase() ){
       return true;
     }
     else{
@@ -38,6 +39,36 @@ constructor(public router :Router){}
    }
 
 
+       rolecAdminAndOrganizerCheck(){
+    if(localStorage.getItem("Role")?.toUpperCase()==="admin".toUpperCase() || localStorage.getItem("Role")?.toUpperCase()==="organizer".toUpperCase() ){
+      return true;
+    }
+    else{
+      return false;
+    }
+   }
+
+
+  
+   
+
+
+   sendRequestToBeAnOrganizer(){
+    this.requestToBeAnOrganizer.CreateRequest().subscribe({
+
+      next:(res:any)=>{
+        alert("The Request is sended it successfully");
+      },
+      error:err=>{
+        alert(err.error.msg);
+        console.log(err);
+        console.log(err.error);
+        
+      }
+    });
+
+
+   }
 
       
 

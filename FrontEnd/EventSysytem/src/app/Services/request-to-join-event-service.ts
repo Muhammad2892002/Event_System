@@ -26,8 +26,8 @@ export class RequestToJoinEventService {
     return this._http.get(this.apiurl+"/GetByCriteria",{params:params});
   }
 
-  AddRequestToJoinEvent(request:AddAndUpdateRequest){
-    return this._http.post(this.apiurl+"/CreateRequest",request);
+  AddRequestToJoinEvent(eventId:number){
+    return this._http.post(this.apiurl+"/CreateRequest",eventId );
   }
 
 

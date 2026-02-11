@@ -223,9 +223,9 @@ export class EventComponent {
   clearForm() {
     this.eventForm.reset();
   }
-  loadEvent(id: number) {
+  loadEvent(id?: number|null) {
     this.clearForm();
-    this._eventService.getEventById(id).subscribe({
+    this._eventService.getEventById(id??0).subscribe({
       next: (res: any) => {
         this.eventForm.patchValue({
           id: res.id,
@@ -248,15 +248,17 @@ export class EventComponent {
   confirmAttendeeDelete(event: boolean) {
 
     if (event) {
-      alert("hehehehehe good try ");
+      
       this._eventService.DeleteEvent(this.eventId).subscribe({
 
         next: (res: any) => {
           alert("Deleted successfully");
           this.click();
+          this.deleteConfirmation = false;
 
         },
         error: err => {
+           this.deleteConfirmation = false;
           alert("cant be deleted");
 
         }
@@ -275,6 +277,11 @@ export class EventComponent {
 
 
 
+  }
+
+  RoleCheck(){
+
+    return localStorage.getItem("Role")?.toUpperCase()=="admin".toUpperCase();
   }
 
 }

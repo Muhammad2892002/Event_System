@@ -379,7 +379,7 @@ namespace Event_System.Controllers
 
                             return BadRequest( new {msg= "This organizer cannot be deleted. Please remove all attendees from all events organized by this user first." });
                         }
-                        massage = "Deleted Organizer successfully";
+                        massage = "Organizer";
 
 
 
@@ -398,7 +398,7 @@ namespace Event_System.Controllers
                             return BadRequest(new { msg = "You cannot delete this attendee while he is  registered as a participant in one or more events." });
 
                         }
-                        massage = "Removed Attendee successfully";
+                        massage = "Attendee";
 
 
 
@@ -412,7 +412,7 @@ namespace Event_System.Controllers
                     _eventContext.Attendees.Remove(attende);
 
                     _eventContext.SaveChanges();
-                    return Ok(massage);
+                    return Ok(new { msg= $"Removed{massage}successfully" });
                 }
                 else
                 {

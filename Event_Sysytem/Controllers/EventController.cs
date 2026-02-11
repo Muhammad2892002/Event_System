@@ -24,17 +24,18 @@ namespace Event_System.Controllers
 
             eventContext = _eventContext;
         }
-       
+        [Authorize(Roles = "Organizer,Admin,Attendee")]
         [HttpGet("GetByCriteria")]
+      
         public IActionResult GetByCriteria([FromQuery]SearchEventDto searchdto) {
             try {
 
                 DateTime? eventDate = searchdto.EventDate?.Date;
                 DateTime? createdAt = searchdto.CreatedAt?.Date;
 
-                //var role=User.FindFirst(ClaimTypes.Role)?.Value;
-                //if (role.ToUpper() == "Admin".ToUpper())
-                //{
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+                if (role.ToUpper() == "Admin".ToUpper())
+                {
 
                     var allEvents = (
          from events in eventContext.Events.AsNoTracking()
@@ -70,71 +71,114 @@ namespace Event_System.Controllers
              LocationName = events.LocationNavigation.Name
          }
      ).ToList();
-                return Ok(allEvents);
+                    return Ok(allEvents);
 
 
 
-                //}
-     //           else { 
-     //               var OrganizerId=User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                
-                
-     //                           var allEvents = (
-     //    from events in eventContext.Events.AsNoTracking()
-     //    where
-     //        (searchdto.Title == null || events.Title == searchdto.Title)
-     //        &&
-     //        (events.OrganizerId == int.Parse(OrganizerId))
-     //        &&
-     //        (searchdto.LocationId == null || events.Location == searchdto.LocationId)
-     //        &&
-     //        (
-     //            eventDate == null ||
-     //            (events.EventDate >= eventDate &&
-     //             events.EventDate < eventDate.Value.AddDays(1))
-     //        )
-     //        &&
-     //        (
-     //            createdAt == null ||
-     //            (events.CreatedAt >= createdAt &&
-     //             events.CreatedAt < createdAt.Value.AddDays(1))
-     //        )
-     //    select new ShowAllEvents
-     //    {
-     //        Title = events.Title,
-     //        Description = events.Description,
-     //        EventDate = events.EventDate,
-     //        CreatedAt = events.CreatedAt,
-     //        MaxParticipants = events.MaxParticipants,
-     //        OrganizerId = events.OrganizerId,
-     //        OrganizerName = events.Organizer.FirstName + " " + events.Organizer.LastName,
-     //        Location = events.Location,
-     //        LocationName = events.LocationNavigation.Name
-     //    }
-     //).ToList();
-     //               return Ok(allEvents);
-                
-                
-     //           }
+                }
+                else if (role.ToUpper() == "organizer".ToUpper())
+                {
+                    var OrganizerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
 
-    
+                    var allEvents = (
+from events in eventContext.Events.AsNoTracking()
+where
+ (searchdto.Title == null || events.Title == searchdto.Title)
+ &&
+ (events.OrganizerId == int.Parse(OrganizerId))
+ &&
+ (searchdto.LocationId == null || events.Location == searchdto.LocationId)
+ &&
+ (
+     eventDate == null ||
+     (events.EventDate >= eventDate &&
+      events.EventDate < eventDate.Value.AddDays(1))
+ )
+ &&
+ (
+     createdAt == null ||
+     (events.CreatedAt >= createdAt &&
+      events.CreatedAt < createdAt.Value.AddDays(1))
+ )
+select new ShowAllEvents
+{
+    Title = events.Title,
+    Description = events.Description,
+    EventDate = events.EventDate,
+    CreatedAt = events.CreatedAt,
+    MaxParticipants = events.MaxParticipants,
+    OrganizerId = events.OrganizerId,
+    OrganizerName = events.Organizer.FirstName + " " + events.Organizer.LastName,
+    Location = events.Location,
+    LocationName = events.LocationNavigation.Name
+}
+).ToList();
+                    return Ok(allEvents);
+
+
+                }
+                else {
+
+                    var allEvents = (
+from events in eventContext.Events.AsNoTracking()
+where
+   (searchdto.Title == null || events.Title == searchdto.Title)
+   &&
+   (searchdto.OrganizerId == null || events.OrganizerId == searchdto.OrganizerId)
+   &&
+   (searchdto.LocationId == null || events.Location == searchdto.LocationId)
+   &&
+   (
+       eventDate == null ||
+       (events.EventDate >= eventDate &&
+        events.EventDate < eventDate.Value.AddDays(1))
+   )
+   &&
+   (
+       createdAt == null ||
+       (events.CreatedAt >= createdAt &&
+        events.CreatedAt < createdAt.Value.AddDays(1))
+   )
+select new ShowAllEvents
+{
+   Id = events.Id,
+   Title = events.Title,
+   Description = events.Description,
+   EventDate = events.EventDate,
+   CreatedAt = events.CreatedAt,
+   MaxParticipants = events.MaxParticipants,
+   OrganizerId = events.OrganizerId,
+   OrganizerName = events.Organizer.FirstName + " " + events.Organizer.LastName,
+   Location = events.Location,
+   LocationName = events.LocationNavigation.Name
+}
+).ToList();
+
+
+
+                    return Ok(allEvents);
+
+                }
 
 
 
 
 
-                
-     
 
 
 
 
-                //return Ok();
-            
-            
-            
-            
+
+
+
+
+
+                    return Ok();
+
+
+
+
             }
             catch (Exception ex) {
             
@@ -334,6 +378,8 @@ namespace Event_System.Controllers
         
         
         }
+
+        [Authorize(Roles = "Organizer,Admin")]
 
         [HttpGet("GetById/{id}")]
         //ShowAllEvents

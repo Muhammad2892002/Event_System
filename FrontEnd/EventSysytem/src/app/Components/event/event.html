@@ -128,7 +128,7 @@
                         <td>
                             <button type="button" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal"
-                                (click)="loadEvent(item.Id!)"
+                                (click)="loadEvent(item.Id)"
                                 class="btn btn-outline-success me-2">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
@@ -236,6 +236,7 @@
                                     </label>
                                 }
                         </div>
+                        @if(RoleCheck()){
 
                         <!-- Organizer Dropdown -->
                         <div class="col-md-6">
@@ -262,6 +263,7 @@
 
 
                         </div>
+                    }
 
                         <!-- Max Participants -->
                         <div class="col-md-6">

@@ -94,9 +94,11 @@ export class RequestToBeOrganizer {
 
         next:(res:any)=>{
           alert("Request Deleted Successfully")
+          this.deleteConfirmation=false;
+          this.click();
         },
         error:err=>{
-          alert("You cant delete this organizer")
+          alert(err.error.msg);
 
         }
       })

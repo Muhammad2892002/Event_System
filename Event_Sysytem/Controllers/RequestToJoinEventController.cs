@@ -29,10 +29,10 @@ namespace Event_System.Controllers
 
 
             try {
-                //var role = User.FindFirst(ClaimTypes.Role)?.Value;
-                //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                //if (role.ToUpper() == "admin".ToUpper())
-                //{
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+                
+                if (role.ToUpper() == "admin".ToUpper())
+                {
                     DateTime? requestedDate = obj.RequestedAt?.Date;
 
                     var allRequests = (from request in _context.EventRequests
@@ -76,59 +76,61 @@ namespace Event_System.Controllers
 
                     return Ok(allRequests);
 
-                //}
-                //else {
-                //    int organizerId = int.Parse(userId);
-                //    DateTime? requestedDate = obj.RequestedAt?.Date;
+                }
+                else
+                {
+                    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    int organizerId = int.Parse(userId);
+                    DateTime? requestedDate = obj.RequestedAt?.Date;
 
-                //    var query =
-                //        from request in _context.EventRequests
-                //        join user in _context.Attendees
-                //            on request.UserId equals user.Id
-                //        where
-                //            (obj.UserId == null || obj.UserId == request.UserId) &&
-                //            request.EventNavigation.OrganizerId == organizerId &&
-                //            (!requestedDate.HasValue ||
-                //                (request.RequestedAt >= requestedDate.Value &&
-                //                 request.RequestedAt < requestedDate.Value.AddDays(1))) &&
-                //            (obj.Status == null || obj.Status == request.Status)
-                //        select new ShowAllEventRequestsDto
-                //        {
-                //            Id = request.Id,
-                //            EventId = request.EventId,
-                //            email = user.Email,
-                //            EventName = request.EventNavigation.Title,
-                //            Name = user.FirstName + " " + user.LastName,
-                //            RequestedAt = request.RequestedAt,
-                //            Status = request.Status
-                //        };
+                    var query =
+                        from request in _context.EventRequests
+                        join user in _context.Attendees
+                            on request.UserId equals user.Id
+                        where
+                            (obj.UserId == null || obj.UserId == request.UserId) &&
+                            request.EventNavigation.OrganizerId == organizerId &&
+                            (!requestedDate.HasValue ||
+                                (request.RequestedAt >= requestedDate.Value &&
+                                 request.RequestedAt < requestedDate.Value.AddDays(1))) &&
+                            (obj.Status == null || obj.Status == request.Status)
+                        select new ShowAllEventRequestsDto
+                        {
+                            Id = request.Id,
+                            EventId = request.EventId,
+                            email = user.Email,
+                            EventName = request.EventNavigation.Title,
+                            Name = user.FirstName + " " + user.LastName,
+                            RequestedAt = request.RequestedAt,
+                            Status = request.Status
+                        };
 
-                //    var allRequests = query.ToList();
-
-                   
-
-                //    return Ok(allRequests);
+                    var allRequests = query.ToList();
 
 
 
-
-                //  //return BadRequest();
+                    return Ok(allRequests);
 
 
 
 
+                    return BadRequest();
 
 
 
 
-                //}
-               // return BadRequest();
 
 
-               
 
 
-               
+                }
+                return BadRequest();
+
+
+
+
+
+
             }
             catch (Exception ex) { 
             
@@ -140,14 +142,21 @@ namespace Event_System.Controllers
         }
         //[Authorize(Roles = "Organizer,Admin,Attendee")]
         [HttpPost("CreateRequest")]
-        public IActionResult CreateRequest([FromBody]EventRequestDto request) {
+        public IActionResult CreateRequest([FromBody]long request) {
             try {
-                var userRequestCheck = _context.EventRequests.Any(obj => obj.EventId == request.EventId && obj.UserId == request.UserId && obj.Status == (int)Enums.Status.Approved);
-                var isUserExist = _context.Attendees.Any(obj=>obj.Id==request.UserId);
-                var isEventExist = _context.Events.Any(obj=>obj.Id==request.EventId);
-                if (userRequestCheck) {
+                var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var userApprovedRequestCheck = _context.EventRequests.Any(obj => obj.EventId == request && obj.UserId == userId && obj.Status == (int)Enums.Status.Approved);
+                var userPendingRequestCheck = _context.EventRequests.Any(obj => obj.EventId == request && obj.UserId == userId && obj.Status == (int)Enums.Status.pending);
+                var isUserExist = _context.Attendees.Any(obj=>obj.Id==userId);
+                var isEventExist = _context.Events.Any(obj=>obj.Id== request);
+                if (userApprovedRequestCheck) {
 
-                    return BadRequest("You Cannot Join to Event already accepted");
+                    return BadRequest(new { msg= "You Cannot Join to Event already accepted" });
+                }
+                if (userPendingRequestCheck)
+                {
+
+                    return BadRequest(new { msg = "You cannot send another request." });
                 }
                 if (!isUserExist && !isEventExist) {
                     return BadRequest("There is no Attendee and Event");
@@ -162,8 +171,8 @@ namespace Event_System.Controllers
                 }
                 EventRequest requestEvent= new EventRequest() { 
                 
-                    EventId = request.EventId,
-                    UserId = request.UserId,
+                    EventId = request,
+                    UserId = userId,
                     Status=(int)Enums.Status.pending,
                     RequestedAt = DateTime.Now,
                     
@@ -177,7 +186,7 @@ namespace Event_System.Controllers
                 _context.SaveChanges();
 
 
-                return Ok("The Requested is send it successfully");
+                return Ok(new { msg= "The Requested is send it successfully" });
             }
             catch(Exception ex) {
             
@@ -193,60 +202,69 @@ namespace Event_System.Controllers
         public IActionResult Update([FromBody]EventRequestDto request)
         {
             try {
-                var isUserExist = _context.Attendees.Any(obj => obj.Id == request.UserId);
-                var isEventExist = _context.Events.Any(obj => obj.Id == request.EventId);
-                if (!isUserExist && !isEventExist)
+                var RequestObj = _context.EventRequests.FirstOrDefault(req => req.Id == request.Id);
+                if (RequestObj != null)
                 {
-                    return BadRequest("There is no Attendee and Event");
-                }
-                if (isUserExist && !isEventExist)
-                {
-                    return BadRequest("There is no  Event");
-                }
-                if (!isUserExist && isEventExist)
-                {
-                    return BadRequest("There is no Attendee");
-                }
-                if (request.Status < (int)Enums.Status.pending || request.Status > (int)Enums.Status.Approved) {
+                    var isUserExist = _context.Attendees.Any(obj => obj.Id == RequestObj.UserId);
+                    var isEventExist = _context.Events.Any(obj => obj.Id == RequestObj.EventId);
+                    if (!isUserExist && !isEventExist)
+                    {
+                        return BadRequest("There is no Attendee and Event");
+                    }
+                    if (isUserExist && !isEventExist)
+                    {
+                        return BadRequest("There is no  Event");
+                    }
+                    if (!isUserExist && isEventExist)
+                    {
+                        return BadRequest("There is no Attendee");
+                    }
+                    if (request.Status < (int)Enums.Status.pending || request.Status > (int)Enums.Status.Approved)
+                    {
 
-                    return BadRequest("please enter valid status 0=pending 1=rejected 2=approved");
-                }
+                        return BadRequest("please enter valid status 0=pending 1=rejected 2=approved");
+                    }
 
-                var requestCheck = _context.EventRequests.FirstOrDefault(obj => obj.Id == request.Id&& obj.Status!=(int)Enums.Status.Approved);
-                if (requestCheck==null || requestCheck.Status==(int)Enums.Status.Approved) {
-                    return BadRequest("This event may be deleted or approved");
-                
-                }
-                if (request.Status == (int)Enums.Status.Rejected)
-                {
+                    //var requestCheck = _context.EventRequests.FirstOrDefault(obj => obj.Id == request.Id && obj.Status != (int)Enums.Status.Approved);
+                    if (RequestObj == null || RequestObj.Status == (int)Enums.Status.Approved)
+                    {
+                        return BadRequest(new {msg= "This event may be deleted or approved" });
 
-                    requestCheck.Status = (int)Enums.Status.Rejected;
+                    }
+                    if (request.Status == (int)Enums.Status.Rejected)
+                    {
+
+                        RequestObj.Status = (int)Enums.Status.Rejected;
+                        _context.SaveChanges();
+
+                        return Ok(new { msg = "Your Request is rejected" });
+
+
+                    }
+                    else if (request.Status == (int)Enums.Status.Approved)
+                    {
+                        EventParticipant newParticipants = new EventParticipant()
+                        {
+                            EventId = RequestObj.EventId,
+                            UserId = RequestObj.UserId,
+
+
+
+                        };
+                        _context.EventParticipants.Add(newParticipants);
+                        RequestObj.Status = (int)Enums.Status.Approved;
+
+
+
+
+                    }
+
+
                     _context.SaveChanges();
 
-                    return Ok("Your Request is rejected");
-
-
+                    return Ok(new { msg = "Your Request is approved" });
                 }
-                else if (request.Status == (int)Enums.Status.Approved) { 
-                    EventParticipant newParticipants= new EventParticipant() { 
-                      EventId= requestCheck.EventId,
-                      UserId= requestCheck.UserId,
-                    
-                    
-                    
-                    };
-                    _context.EventParticipants.Add(newParticipants);
-                    requestCheck.Status= (int)Enums.Status.Approved;
-                   
-                    
-                
-                
-                }
-            
-
-                _context.SaveChanges();
-
-                return Ok("Your Request is approved");
+                return BadRequest();
             }
             catch (Exception ex) {
 
@@ -267,7 +285,7 @@ namespace Event_System.Controllers
                 var Request = _context.EventRequests.FirstOrDefault(obj=>obj.Id==Id);
                 if (Request == null) {
 
-                    return BadRequest("This request may be deleted.");
+                    return BadRequest(new { msg= "This request may be deleted." });
                 
                 }
                 if (Request.Status==(int)Enums.Status.Approved) {

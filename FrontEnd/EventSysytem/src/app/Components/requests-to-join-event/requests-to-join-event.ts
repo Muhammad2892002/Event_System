@@ -149,51 +149,7 @@ export class RequestsToJoinEvent {
   });
 
 
-    saveRequest() {
-      let request:AddAndUpdateRequest={
-        id:this.requestForm.value.Id??0,
-        EventId:this.requestForm.value.eventId,
-        UserId:this.requestForm.value.userId,
-        status:null,
-        RequestedAt:null
 
-      };
-    if (this.requestForm.valid) {
-      if(request.id==0){
-       this.requestToJoinEventService.AddRequestToJoinEvent(request).subscribe({
-        next:(res:any)=>{
-          console.log("Successfully Added");
-        },
-        error:err=>{
-          console.log(err.error);
-        }
-
-
-       });
-      }
-      else{
-
-         this.requestToJoinEventService.EditRequestToJoinEvent(request).subscribe({
-        next:(res:any)=>{
-          console.log("Successfully Added");
-        },
-        error:err=>{
-          console.log(err.error);
-        }
-
-
-       });
-        
-
-
-      }
-   
-    }
-    
-    else {
-      console.log('Form is invalid');
-    }
-  }
  
 
     deleteConfirmation :boolean=false;
@@ -216,10 +172,12 @@ export class RequestsToJoinEvent {
         
       next:(res:any)=>{
         alert("Deleted successfully");
+        this.deleteConfirmation=false;
+        this.click();
 
       },
       error:err=>{
-        alert("Cant be delete it")
+        alert(err.error.msg)
       }
 
      });

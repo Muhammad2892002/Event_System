@@ -281,12 +281,15 @@ export class AttendeeComponent {
 
         next:(res:any)=>{
           alert("Deleted successfully");
+           this.click();
+          this.deleteConfirmation=false;
         },
         error:err=>{
           console.log(err);
           
 
           alert(err.error.msg);
+       
         }
 
        
@@ -305,6 +308,12 @@ export class AttendeeComponent {
  let role=localStorage.getItem("Role")?.toUpperCase();
  para=para.toUpperCase();
   return role==para.toUpperCase();
+ }
+
+    RoleCheck(){
+ let role=localStorage.getItem("Role")?.toUpperCase();
+ 
+  return role=="admin".toUpperCase();
  }
 
 }

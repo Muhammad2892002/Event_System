@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Event_System.Controllers
 {
@@ -61,18 +62,20 @@ namespace Event_System.Controllers
            
         
         }
-        [Authorize(Roles = "Admin,Attendee")]
+        
         [HttpPost("SendRequest")]
-        public IActionResult SendRequest(int AttendeeId)
+        public IActionResult SendRequest()
         {
           
             try {
-                var checkAttendee= _eventContext.Attendees.Any(x=>x.Id==AttendeeId);
-                if (checkAttendee)
+                var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var checkAttendee= _eventContext.Attendees.Any(x=>x.Id== userId);
+                var checkAnyPendingRequest = _eventContext.OrganizerRequests.Any(obj=>obj.UserId==userId&&obj.Status==(int)Enums.Status.pending);
+                if (checkAttendee &&!checkAnyPendingRequest)
                 {
                     OrganizerRequest request = new OrganizerRequest()
                     {
-                        UserId = AttendeeId,
+                        UserId = userId,
                         Status = (int)Enums.Status.pending,
                         RequestedAt = DateTime.Now,
 
@@ -86,9 +89,14 @@ namespace Event_System.Controllers
 
 
 
-                    return Ok("Request Sended SuccessFully");
+                    return Ok(new { msg= "Request Sended SuccessFully" });
                 }
                 else {
+                    if (checkAnyPendingRequest) {
+
+                        return BadRequest(new { msg = "you cannot add another request " });
+                    
+                    }
                     return BadRequest("The User You entered does not exist ");
                 
                 
@@ -106,7 +114,7 @@ namespace Event_System.Controllers
         
         
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Organizer")]
         [HttpPut("UpdateRequest")]
         public IActionResult UpdateRequest(UpdateOrganizerRequestDto obj)
         {
@@ -155,7 +163,7 @@ namespace Event_System.Controllers
                     }
 
 
-                        return Ok("Request Added Successfully");
+                        return Ok(new {msg= "Request Added Successfully" });
                 }
                 else { 
                 
@@ -190,7 +198,7 @@ namespace Event_System.Controllers
                     {
                         _eventContext.OrganizerRequests.Remove(OrganizerRequest);
                         _eventContext.SaveChanges();
-                        return Ok("Deleted SuccessFully");
+                        return Ok(new { msg="Deleted SuccessFully" });
 
 
 

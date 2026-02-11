@@ -9,6 +9,11 @@ export class RequestToBeOrganizerService {
   constructor(private _http:HttpClient){}
   apiUrl:string="https://localhost:7087/api/RequestToBeAnOrganizer";
 
+
+  CreateRequest(){
+    return this._http.post(this.apiUrl+"/SendRequest",{});
+  }
+
   GetAllRequests(searchObj:any){
     let params=new HttpParams();
     params=params.set("status",searchObj?.status??"");

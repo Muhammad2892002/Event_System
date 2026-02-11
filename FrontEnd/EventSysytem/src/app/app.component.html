@@ -31,7 +31,7 @@
             Event
           </a>
           <ul class="dropdown-menu">
-                 @if(rolecheck()){
+                 @if(rolecAdminAndOrganizerCheck()){
 
                   <li><a class="dropdown-item" routerLink="/events" routerLinkActive="active">All Events</a></li>
 
@@ -42,7 +42,8 @@
            
           </ul>
         </li>
-        @if(rolecheck()){
+        
+        @if(roleAdmincheck()){
 
         <!-- Requests (other requests not tied to events) -->
         <li class="nav-item">
@@ -52,14 +53,17 @@
 
       </ul>
       <div class="buttons">
+        @if(!rolecAdminAndOrganizerCheck()){
 
             <!-- Sign Out button -->
       <button type="button" class="btn btn-success me-3"
+      (click)="sendRequestToBeAnOrganizer()"
     
       >
        
         Be an organizer
       </button>
+    }
 
 
 

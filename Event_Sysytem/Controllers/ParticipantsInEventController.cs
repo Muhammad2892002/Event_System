@@ -19,14 +19,14 @@ namespace Event_System.Controllers
         {
             _eventContext = eventContext;
         }
-        [Authorize(Roles = "Organizer,Admin")]
+        [Authorize(Roles = "Organizer,Admin,Attendee")]
         [HttpGet("GetByCriteria")]
         public IActionResult GetByCriteria([FromQuery]SearchParticipants searchParticipants)
         {
             try
             {
                 var role = User.FindFirst(ClaimTypes.Role)?.Value;
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+               
                 if (role.ToUpper() == "admin".ToUpper())
                 {
                     var allParticipants = (from particinates in _eventContext.EventParticipants
@@ -57,25 +57,57 @@ namespace Event_System.Controllers
                 }
                 else
                 {
-
-                    var allParticipants = (from particinates in _eventContext.EventParticipants
-                                           where (particinates.EventNavigation.OrganizerId == int.Parse(userId))
-                                           && (searchParticipants.ParticipantId == particinates.UserId || searchParticipants.ParticipantId == null)
-                                           select new ShowAllParticipantsDto
-                                           {
-                                               AttendeeName = particinates.UserNavigation.FirstName + particinates.UserNavigation.LastName,
-                                               Email = particinates.UserNavigation.Email,
-                                               EventName = particinates.EventNavigation.Title,
-                                               Location = particinates.EventNavigation.LocationNavigation.Name,
-                                               HeldAt = particinates.EventNavigation.EventDate,
-                                               OrganizerName = particinates.EventNavigation.Organizer.FirstName + particinates.EventNavigation.Organizer.LastName,
+                    var userId =int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                    if (role.ToUpper() == "organizer".ToUpper())
+                    {
 
 
+                        var allParticipants = (from particinates in _eventContext.EventParticipants
+                                               where (particinates.EventNavigation.OrganizerId == userId)
+                                               && (searchParticipants.ParticipantId == particinates.UserId || searchParticipants.ParticipantId == null)&&
+                                               (searchParticipants.EventId==particinates.EventId ||searchParticipants.EventId==null)
+                                               select new ShowAllParticipantsDto
+                                               {
+                                                   AttendeeName = particinates.UserNavigation.FirstName + particinates.UserNavigation.LastName,
+                                                   Email = particinates.UserNavigation.Email,
+                                                   EventName = particinates.EventNavigation.Title,
+                                                   Location = particinates.EventNavigation.LocationNavigation.Name,
+                                                   HeldAt = particinates.EventNavigation.EventDate,
+                                                   OrganizerName = particinates.EventNavigation.Organizer.FirstName + particinates.EventNavigation.Organizer.LastName,
 
 
-                                           }).ToList();
 
-                    return Ok(allParticipants);
+
+                                               }).ToList();
+
+
+                        return Ok(allParticipants);
+                    }
+                    if (role.ToUpper() == "Attendee".ToUpper()) {
+                        var allParticipants = (from particinates in _eventContext.EventParticipants
+                                               where
+                                               (particinates.UserId== userId)&&
+                                              (searchParticipants.ParticipantId == particinates.UserId || searchParticipants.ParticipantId == null)&&
+                                               (searchParticipants.EventId == particinates.EventId || searchParticipants.EventId == null)
+                                               select new ShowAllParticipantsDto
+                                               {
+                                                   AttendeeName = particinates.UserNavigation.FirstName + particinates.UserNavigation.LastName,
+                                                   Email = particinates.UserNavigation.Email,
+                                                   EventName = particinates.EventNavigation.Title,
+                                                   Location = particinates.EventNavigation.LocationNavigation.Name,
+                                                   HeldAt = particinates.EventNavigation.EventDate,
+                                                   OrganizerName = particinates.EventNavigation.Organizer.FirstName + particinates.EventNavigation.Organizer.LastName,
+
+
+
+
+                                               }).ToList();
+
+
+                        return Ok(allParticipants);
+
+
+                    }
 
                 }
                 return BadRequest();
@@ -123,13 +155,13 @@ namespace Event_System.Controllers
                     _eventContext.EventParticipants.Add(newParticipants);
                     _eventContext.SaveChanges();
 
-                    return Ok("Added successfully");
+                    return Ok(new { msg="Added successfully" });
 
                 }
                 else if (isUserExist && isEventExist && isUserExistInParticipant)
                 {
 
-                    return BadRequest("This User is already participants");
+                    return BadRequest(new {msg= "This User is already participants" });
 
 
                 }

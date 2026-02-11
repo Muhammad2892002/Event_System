@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FormGroup, FormControl,ReactiveFormsModule, Validators } from '@angular/forms';
 import { Filter } from '../../Interface/Filter';
@@ -20,6 +20,7 @@ export class EventParticipants {
   changePage(pageNumber: number) {
     this.paginationConfig.currentPage=pageNumber;
   }
+  @ViewChild("closeDialog")closeButton!:ElementRef;
   constructor(private eventParticipantsService: EventParticipantsService
     ,private participantServ:AttendeeService, private eventServ: EventService) {}
   searchParticipants:FormGroup=new FormGroup({
@@ -77,7 +78,9 @@ export class EventParticipants {
         })
         console.log(this.allEventParticipants);
       },
-      error:(err:any)=>{console.log(err);}
+      error:(err:any)=>{console.log(err);
+        console.log(err.error);
+      }
     });
 
     console.log(this.searchParticipants.value);
@@ -147,9 +150,13 @@ loadEventsForParticipant(){
       if(participant.Id==null){
    this.eventParticipantsService.AddNewParticipant(participant).subscribe({
         next:(res:any)=>{
+          alert("added Successfully");
+          this.click();
+          this.closeButton.nativeElement.click();
           console.log("added successgully");
         },
         error:err=>{
+          alert(err.error.msg);
           console.log(err);
         }
       });
@@ -159,10 +166,15 @@ loadEventsForParticipant(){
       else{
           this.eventParticipantsService.updateParticipant(participant).subscribe({
         next:(res:any)=>{
-          console.log("updated successfully");
+          alert("updated successfully");
+             this.click();
+          this.closeButton.nativeElement.click();
+         
         },
         error:err=>{
-          console.log(err);
+          alert("You Cant Update this participant because it is already exist");
+         
+          console.log("");
         }
       });
       }
@@ -278,9 +290,12 @@ loadEventsForParticipant(){
       this.eventParticipantsService.DeleteParticipant(this.participantId).subscribe({
         next:(res:any)=>{
           alert("Request deleted successfully");
+          this.click();
+          this.deleteConfirmation = false;
         },
         error:err=>{
           alert("Sorry request cant be deleted");
+          this.deleteConfirmation = false;
         }
       });
 
@@ -291,6 +306,14 @@ loadEventsForParticipant(){
     }
 
   }
+
+
+   RoleCheck(){
+    let role=localStorage.getItem("Role")?.toUpperCase();
+
+    return role=="admin".toUpperCase()|| role=="organizer".toUpperCase();
+  }
+
 
 
 
