@@ -36,7 +36,7 @@ export class Login {
 
     },
     error:err=>{
-      console.log(err.error);
+      alert(err.error.msg);
 
 
 

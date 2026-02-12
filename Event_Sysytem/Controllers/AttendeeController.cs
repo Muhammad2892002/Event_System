@@ -12,7 +12,7 @@ using System.Security.Claims;
 
 namespace Event_System.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AttendeeController : ControllerBase
@@ -181,7 +181,7 @@ namespace Event_System.Controllers
 
 
         }
-        [Authorize(Roles = "Admin")]
+        
         [HttpPost("Create")]
 
         public IActionResult Create([FromBody] CreateAteendeeDto createNewAttendee)

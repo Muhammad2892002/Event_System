@@ -47,7 +47,7 @@ namespace Event_System.Controllers
                     }
                     else {
 
-                        return BadRequest("Wrong password");
+                        return BadRequest(new { msg= "Wrong password" });
                     }
 
                 }

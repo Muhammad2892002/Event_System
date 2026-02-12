@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule, ɵInternalFormsSharedModule } from '@angular/forms';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { AttendeeService } from '../../Services/AttendeeService';
 import { Attendee } from '../../Interface/attendee';
 
@@ -12,7 +12,7 @@ import { Attendee } from '../../Interface/attendee';
 })
 export class SignUp {
 
-  constructor(private attendeeServ:AttendeeService){}
+  constructor(private attendeeServ:AttendeeService,private router:Router){}
 
 
 
@@ -57,12 +57,15 @@ export class SignUp {
     this.attendeeServ.AddAtendee(attendee).subscribe({
 
       next:(res:any)=>{
-        alert("Account created successfully,contact the admin to active your account");
+        alert("Account created successfully");
+        this.router.navigate(['/login']);
+      
+       
 
 
       },
       error:err=>{
-        alert(err.error);
+        alert(err.error.fullName+"\n"+err.error.userName+"\n"+err.error.email);
         console.log(err.error);
         alert("");
       }
