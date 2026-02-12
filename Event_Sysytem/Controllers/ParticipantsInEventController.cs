@@ -68,6 +68,7 @@ namespace Event_System.Controllers
                                                (searchParticipants.EventId==particinates.EventId ||searchParticipants.EventId==null)
                                                select new ShowAllParticipantsDto
                                                {
+                                                   Id=particinates.Id,
                                                    AttendeeName = particinates.UserNavigation.FirstName + particinates.UserNavigation.LastName,
                                                    Email = particinates.UserNavigation.Email,
                                                    EventName = particinates.EventNavigation.Title,

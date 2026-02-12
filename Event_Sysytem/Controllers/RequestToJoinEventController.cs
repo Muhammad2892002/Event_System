@@ -23,7 +23,7 @@ namespace Event_System.Controllers
            _context = context;
         
         }
-        //[Authorize(Roles = "Organizer,Admin")]
+        [Authorize(Roles = "Organizer,Admin")]
         [HttpGet("GetByCriteria")]
         public IActionResult GetByCriteria([FromQuery]SearchEventRequestsDto obj)   {
 
@@ -288,7 +288,7 @@ namespace Event_System.Controllers
                     return BadRequest(new { msg= "This request may be deleted." });
                 
                 }
-                if (Request.Status==(int)Enums.Status.Approved) {
+                if (Request.Status==(int)Enums.Status.Approved ) {
                     var EventParticipants = _context.EventParticipants.FirstOrDefault(obj=>obj.UserId==Request.UserId&&obj.EventId==Request.EventId);
                     if (EventParticipants != null) {
 

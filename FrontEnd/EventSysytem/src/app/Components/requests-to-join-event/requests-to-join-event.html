@@ -104,18 +104,17 @@
                         <td>{{item.email}}</td>
                         <td>
                             @if (item.status === 2) {
-                            <span class="badge bg-success">{{ item.statusName
-                                }}</span>
+                            <span class="badge bg-success"> Approved
+                                </span>
                             }
                             @else if (item.status === 1) {
-                            <span class="badge bg-danger">{{ item.statusName
-                                }}</span>
+                            <span class="badge bg-danger">Rejected
+                                </span>
                             }
                             @else {
                             <span
-                                class="status-text-color    badge bg-warning">{{
-                                item.statusName
-                                }}</span>
+                                class="status-text-color    badge bg-warning">Pending
+                               </span>
                             }
                         </td>
 

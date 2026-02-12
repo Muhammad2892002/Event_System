@@ -103,6 +103,7 @@ where
  )
 select new ShowAllEvents
 {
+    Id=events.Id,
     Title = events.Title,
     Description = events.Description,
     EventDate = events.EventDate,
@@ -193,7 +194,9 @@ select new ShowAllEvents
         [Authorize(Roles = "Organizer,Admin")]
         [HttpPost("CreateEvent")]
         public IActionResult CreateEvent([FromBody] CreateEventDto createEvent)
-        { 
+        {
+            var OrganizerId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            createEvent.OrganizerId = OrganizerId;
             EventErrorMassageDto error = new EventErrorMassageDto();
             
 
@@ -227,7 +230,7 @@ select new ShowAllEvents
                   CreatedAt = DateTime.Now,
                   Location = createEvent.Location,
                   MaxParticipants = createEvent.MaxParticipants,
-                  OrganizerId = createEvent.OrganizerId,
+                  OrganizerId = createEvent.OrganizerId??0,
                   
                 
                 
@@ -300,7 +303,7 @@ select new ShowAllEvents
                         fetchEvent.CreatedAt = createEvent.CreatedAt;
                         fetchEvent.EventDate = createEvent.EventDate;
                         fetchEvent.MaxParticipants = createEvent.MaxParticipants;
-                        fetchEvent.OrganizerId = createEvent.OrganizerId;
+                        fetchEvent.OrganizerId = createEvent.OrganizerId ?? 0;
 
                         eventContext.SaveChanges();
                     }

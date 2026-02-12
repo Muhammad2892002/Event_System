@@ -144,7 +144,7 @@ export class EventComponent {
     title: new FormControl<string | null>(null, Validators.required),
     eventDate: new FormControl<string | null>(null, Validators.required), // date as string
     locationId: new FormControl<number | null>(null, Validators.required),
-    organizerId: new FormControl<number | null>(null, Validators.required),
+    organizerId: new FormControl<number | null>(null),
     maxParticipants: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
     description: new FormControl<string | null>(null)
   });

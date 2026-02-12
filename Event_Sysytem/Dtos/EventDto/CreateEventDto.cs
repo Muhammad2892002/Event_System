@@ -19,7 +19,7 @@ namespace Event_System.Dtos.EventDto
 
         public long MaxParticipants { get; set; }
       
-        public long OrganizerId { get; set; }
+        public long? OrganizerId { get; set; }
 
         
         public DateTime CreatedAt { get; set; }
