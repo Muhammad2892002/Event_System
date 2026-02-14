@@ -311,7 +311,8 @@ loadEventsForParticipant(){
    RoleCheck(){
     let role=localStorage.getItem("Role")?.toUpperCase();
 
-    return role=="admin".toUpperCase();
+    return role=="admin".toUpperCase()
+    ;
   }
 
 

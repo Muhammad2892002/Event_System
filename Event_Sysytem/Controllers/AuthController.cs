@@ -47,13 +47,13 @@ namespace Event_System.Controllers
                     }
                     else {
 
-                        return BadRequest(new { msg= "Wrong password" });
+                        return BadRequest(new { msg= "Wrong password or user not found" });
                     }
 
                 }
                 else {
 
-                    return BadRequest(new { msg= "User not found" });
+                    return BadRequest(new { msg= "Wrong password or user not found" });
                 }
 
                 return BadRequest();
